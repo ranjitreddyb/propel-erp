@@ -186,17 +186,17 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
+            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
             style={{
-              background: 'linear-gradient(135deg, var(--accent), var(--accent2))',
-              boxShadow: '0 0 30px rgba(79,142,247,0.4)',
+              background: 'linear-gradient(135deg, #d4a853, #a67c2f)',
+              boxShadow: '0 0 30px rgba(212,168,83,0.4)',
             }}
           >
-            <Building2 size={28} className="text-white" />
+            <Building2 size={32} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">PropelERP</h1>
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: '#d4a853' }}>Supratik</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text2)' }}>
-            AI-Powered Property Management
+            Property Management System
           </p>
         </div>
 

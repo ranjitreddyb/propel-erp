@@ -186,51 +186,54 @@ export function SahayakChatbot() {
       {isOpen && (
         <div
           className={`fixed z-50 transition-all duration-300 shadow-2xl rounded-2xl overflow-hidden ${
-            isMinimized ? 'bottom-6 right-6 w-72 h-14' : 'bottom-6 right-6 w-96 h-[32rem]'
+            isMinimized ? 'bottom-6 right-6 w-80 h-16' : 'bottom-6 right-6 w-[380px]'
           }`}
           style={{
             background: 'var(--surface)',
-            border: '1px solid var(--border)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 60px rgba(79,142,247,0.15)',
+            border: '1px solid rgba(79,142,247,0.3)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 60px rgba(79,142,247,0.2)',
+            height: isMinimized ? '60px' : '500px',
+            maxHeight: 'calc(100vh - 100px)',
           }}
           data-testid="sahayak-chat-window"
         >
-          {/* Header */}
+          {/* Header - Always Visible */}
           <div
             className="flex items-center justify-between px-4 py-3"
             style={{
-              background: 'linear-gradient(135deg, rgba(79,142,247,0.25) 0%, rgba(124,92,252,0.2) 100%)',
-              borderBottom: '1px solid var(--border)',
+              background: 'linear-gradient(135deg, #1a365d 0%, #2d3748 100%)',
+              borderBottom: '1px solid rgba(79,142,247,0.3)',
+              minHeight: '56px',
             }}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent2))' }}
+                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #4f8ef7, #7c5cfc)' }}
               >
-                <Sparkles size={16} className="text-white" />
+                <Sparkles size={20} className="text-white" />
               </div>
               <div>
-                <h3 className="font-bold text-sm" style={{ color: 'var(--text)' }}>Sahayak</h3>
-                <p className="text-[10px]" style={{ color: 'var(--text3)' }}>PropelERP AI Assistant</p>
+                <h3 className="font-bold text-base text-white">Sahayak</h3>
+                <p className="text-xs text-blue-300">Supratik AI Assistant</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={(e) => { e.stopPropagation(); setIsMinimized(!isMinimized); }}
-                className="w-8 h-8 rounded-lg flex items-center justify-center transition"
-                style={{ background: 'rgba(255,255,255,0.1)', color: '#fff' }}
+                className="w-9 h-9 rounded-lg flex items-center justify-center transition-all hover:bg-white/20"
+                style={{ background: 'rgba(255,255,255,0.1)' }}
                 data-testid="sahayak-minimize-btn"
               >
-                {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
+                {isMinimized ? <Maximize2 size={18} className="text-white" /> : <Minimize2 size={18} className="text-white" />}
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); toggleChat(); }}
-                className="w-8 h-8 rounded-lg flex items-center justify-center transition hover:bg-red-500"
-                style={{ background: 'rgba(255,80,80,0.8)', color: '#fff' }}
+                className="w-9 h-9 rounded-lg flex items-center justify-center transition-all hover:bg-red-600"
+                style={{ background: '#dc2626' }}
                 data-testid="sahayak-close-btn"
               >
-                <X size={18} />
+                <X size={20} className="text-white" />
               </button>
             </div>
           </div>

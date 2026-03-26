@@ -150,12 +150,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Logo */}
         <div className="flex items-center gap-2 min-w-[200px]">
           <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg,var(--accent),var(--accent2))' }}
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold text-white"
+            style={{ background: 'linear-gradient(135deg, #d4a853, #a67c2f)' }}
           >
-            <Building2 size={18} />
+            <Building2 size={20} />
           </div>
-          <span className="font-bold text-base tracking-tight hidden sm:block">PropelERP</span>
+          <span className="font-bold text-lg tracking-tight hidden sm:block" style={{ color: '#d4a853' }}>Supratik</span>
         </div>
 
         {/* Company Switcher */}
