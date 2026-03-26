@@ -1,20 +1,18 @@
-# Simple development Dockerfile for Node.js backend
+# Node.js Backend Dockerfile
 FROM node:20-alpine
 WORKDIR /app
 
 # Install dependencies
 COPY package.json ./
+COPY tsconfig.json ./
+
 RUN npm install
 
 # Copy source
-COPY . .
+COPY src ./src
 
 # Expose port
 EXPOSE 4000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s \
-  CMD wget -qO- http://localhost:4000/health || exit 1
-
-# Run in dev mode
+# Run in dev mode with ts-node-dev
 CMD ["npm", "run", "dev"]
