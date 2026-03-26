@@ -220,16 +220,18 @@ export function SahayakChatbot() {
               <button
                 onClick={(e) => { e.stopPropagation(); setIsMinimized(!isMinimized); }}
                 className="p-1.5 rounded-lg hover:bg-white/10 transition"
+                style={{ color: 'var(--text)' }}
                 data-testid="sahayak-minimize-btn"
               >
                 {isMinimized ? <Maximize2 size={14} /> : <Minimize2 size={14} />}
               </button>
               <button
-                onClick={toggleChat}
-                className="p-1.5 rounded-lg hover:bg-white/10 transition"
+                onClick={(e) => { e.stopPropagation(); toggleChat(); }}
+                className="p-1.5 rounded-lg hover:bg-red-500/20 transition"
+                style={{ color: 'var(--text)' }}
                 data-testid="sahayak-close-btn"
               >
-                <X size={14} />
+                <X size={16} />
               </button>
             </div>
           </div>
