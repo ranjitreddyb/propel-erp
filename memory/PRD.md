@@ -15,12 +15,12 @@ AI-Powered Property Management SaaS Platform for enterprise-level property manag
 |-------|------------|
 | Frontend | Next.js 14, TypeScript, Tailwind CSS |
 | Backend API | Node.js, Express, TypeScript (Port 4000) |
-| AI Engine | Python FastAPI (Port 8000) |
+| AI Engine | Python FastAPI (Port 8001 external, 8000 internal) |
 | Database | PostgreSQL 16, Redis 7, MongoDB 7 |
-| Auth | JWT + OTP-based mobile login |
+| Auth | JWT + OTP-based mobile login (localStorage) |
 | AI Integration | Emergent LLM (GPT-4o) |
 | Containerization | Docker + Docker Compose |
-| Reverse Proxy | Nginx with SSL (Let's Encrypt) |
+| Reverse Proxy | Nginx with SSL (Cloudflare + Let's Encrypt) |
 
 ---
 
@@ -37,8 +37,8 @@ AI-Powered Property Management SaaS Platform for enterprise-level property manag
 ## Core Requirements (Static)
 
 ### Authentication
-- [x] Mobile number + OTP login (Brevo SMS mocked, OTP: 121212)
-- [x] JWT-based session management
+- [x] Mobile number + OTP login (Mock OTP: 121212)
+- [x] JWT-based session management (localStorage)
 - [x] Multi-company support with role switching
 
 ### AI Modules
@@ -50,6 +50,7 @@ AI-Powered Property Management SaaS Platform for enterprise-level property manag
 - [x] Tenant Sentiment AI — Satisfaction scoring
 - [x] Energy Optimization AI — Auto-scheduling
 - [x] PropelAI Chatbot — Portfolio Q&A (Emergent LLM integrated)
+- [x] **Sahayak Floating Assistant** — Global AI chatbot
 
 ### Platform Features
 - [x] Workflow Designer — Visual drag-step workflows
@@ -59,12 +60,13 @@ AI-Powered Property Management SaaS Platform for enterprise-level property manag
 - [x] Document Manager — AI contract analysis, e-signature tracking
 - [x] User Management — Role-based access matrix
 - [x] Executive Dashboard — Full KPI suite with live charts
+- [x] **CRM Module** — Lead management and contacts
 
 ---
 
-## What's Been Implemented (Jan 2026)
+## What's Been Implemented
 
-### Session 1 - Deployment Preparation
+### Session 1 - Deployment Preparation (Jan 2026)
 - [x] Cloned and analyzed existing codebase
 - [x] **Mobile + OTP Authentication**
   - New `/api/v1/auth/send-otp` endpoint
@@ -86,28 +88,61 @@ AI-Powered Property Management SaaS Platform for enterprise-level property manag
   - Created `.env.production` template
   - Updated database seed with phone numbers
 
+### Session 2 - UI/UX Enhancements (Dec 16, 2025)
+- [x] **CRM Module Created**
+  - `/dashboard/crm/page.tsx` - Full CRM page
+  - Sales leads table with stage management
+  - Contact database tab (Tenants/Vendors)
+  - Search and filter functionality
+  - Lead scoring visualization
+  
+- [x] **HR Search Enhancement**
+  - Real-time search across all employee fields
+  - Department filter dropdown
+  - Results count display
+  - Empty state handling with clear filters
+  
+- [x] **Sahayak Floating Chatbot**
+  - `SahayakChatbot.tsx` component
+  - Animated floating button with bounce effect
+  - Chat window with minimize/expand
+  - Quick prompts for common queries
+  - AI Engine integration via Nginx proxy
+  - Fallback demo responses when AI unavailable
+  
+- [x] **Auth System Cleanup**
+  - Removed next-auth dependencies from AppShell
+  - Updated Providers to remove SessionProvider
+  - Updated dashboard layout with client-side auth
+  - Updated API service to use localStorage token
+  
+- [x] **UI Theme Refinement**
+  - Real estate professional dark theme
+  - Gold accent colors for luxury feel
+  - Improved table and card styling
+  - Added animation utilities (bounce, shimmer)
+  - Enhanced scrollbar and form inputs
+
 ---
 
 ## Prioritized Backlog
 
-### P0 - Critical (Before Demo)
-- [ ] Push code changes to GitHub
-- [ ] DNS A record: `propelerp.wisewit.ai` → `129.159.232.247`
-- [ ] Run deployment script on OCI VM
-- [ ] Verify all services running
-- [ ] Test OTP login flow
+### P0 - Critical (COMPLETED)
+- [x] Fix CRM 404 error
+- [x] Add HR search functionality
+- [x] Add Sahayak floating chatbot
+- [x] Remove next-auth dependencies
 
 ### P1 - High Priority
+- [ ] Admin FAQ management for Sahayak
+- [ ] Test AI Engine integration end-to-end on live server
 - [ ] Enable real Brevo SMS for OTP
-- [ ] Add more seed data (properties, tenants, leases)
-- [ ] Test all AI modules with real data
-- [ ] Load testing for production readiness
 
 ### P2 - Medium Priority
+- [ ] Add more CRM functionality (lead creation form)
+- [ ] Mobile responsive improvements
 - [ ] Setup database backups (pg_dump cron)
 - [ ] Implement monitoring (Prometheus/Grafana)
-- [ ] Add email notifications (SendGrid/Brevo)
-- [ ] Mobile responsive improvements
 
 ### P3 - Future/Nice to Have
 - [ ] Mobile app (React Native)
@@ -117,13 +152,33 @@ AI-Powered Property Management SaaS Platform for enterprise-level property manag
 
 ---
 
-## Next Tasks (Immediate)
+## Deployment Instructions
 
-1. **User Action**: Create DNS A record pointing `propelerp.wisewit.ai` → `129.159.232.247`
-2. **User Action**: SSH into OCI VM and run deployment script
-3. **User Action**: Push code changes to GitHub (via "Save to Github" button)
-4. Verify deployment by accessing https://propelerp.wisewit.ai
-5. Test login with mobile: 9999999999, OTP: 121212
+### For OCI VM Deployment (from MacBook terminal)
+
+```bash
+# 1. SSH into OCI VM
+ssh -i ~/path/to/oci-key opc@129.159.232.247
+
+# 2. Navigate to project
+cd /home/opc/propel-erp
+
+# 3. Pull latest code from GitHub
+git pull origin main
+
+# 4. Rebuild and restart containers
+docker-compose down
+docker-compose build --no-cache frontend ai-engine
+docker-compose up -d
+
+# 5. Check logs
+docker-compose logs -f frontend
+docker-compose logs -f ai-engine
+
+# 6. Verify services
+curl https://propelerp.wisewit.ai/health
+curl https://propelerp.wisewit.ai/ai/chat -X POST -H "Content-Type: application/json" -d '{"message":"hello","company_id":"1","history":[]}'
+```
 
 ---
 
@@ -133,17 +188,42 @@ AI-Powered Property Management SaaS Platform for enterprise-level property manag
 - `EMERGENT_LLM_KEY` - For AI chatbot (provided)
 - `JWT_SECRET` - Auto-generated during deployment
 - `DATABASE_URL` - Auto-configured for Docker
-- `BREVO_API_KEY` - Optional, for real SMS
+- `NEXT_PUBLIC_API_URL` - Backend API URL
+- `NEXT_PUBLIC_AI_URL` - AI Engine URL (via Nginx proxy)
 
 ### Ports
 - 3000: Frontend (Next.js)
 - 4000: Backend API (Node.js)
-- 8000: AI Engine (FastAPI)
+- 8001: AI Engine external (8000 internal)
 - 5432: PostgreSQL
 - 6379: Redis
 - 27017: MongoDB
 - 5050: pgAdmin (optional)
 
+### Key Files Modified This Session
+1. `/frontend/src/app/dashboard/crm/page.tsx` - NEW
+2. `/frontend/src/app/dashboard/hr/page.tsx` - Updated with search
+3. `/frontend/src/components/layout/SahayakChatbot.tsx` - NEW
+4. `/frontend/src/components/layout/AppShell.tsx` - Removed next-auth
+5. `/frontend/src/components/layout/Providers.tsx` - Removed SessionProvider
+6. `/frontend/src/app/dashboard/layout.tsx` - Client-side auth
+7. `/frontend/src/services/api.ts` - localStorage token
+8. `/frontend/src/styles/globals.css` - Theme enhancement
+9. `/docker-compose.yml` - AI Engine port mapping
+
 ---
 
-*Last Updated: January 2026*
+## Test Credentials
+- **Phone:** 9999999999
+- **OTP:** 121212
+
+---
+
+## Known Issues
+1. Loading flicker on dashboard due to client-side auth check
+2. AI Engine responses may timeout on complex queries
+3. Sahayak uses demo responses if AI Engine is unreachable
+
+---
+
+*Last Updated: December 16, 2025*
