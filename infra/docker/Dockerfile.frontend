@@ -13,7 +13,6 @@ RUN npm install
 
 # Copy source
 COPY src ./src
-COPY public ./public 2>/dev/null || true
 
 # Expose port
 EXPOSE 3000
