@@ -197,12 +197,11 @@ export function SahayakChatbot() {
         >
           {/* Header */}
           <div
-            className="flex items-center justify-between px-4 py-3 cursor-pointer"
+            className="flex items-center justify-between px-4 py-3"
             style={{
-              background: 'linear-gradient(135deg, rgba(79,142,247,0.2) 0%, rgba(124,92,252,0.15) 100%)',
+              background: 'linear-gradient(135deg, rgba(79,142,247,0.25) 0%, rgba(124,92,252,0.2) 100%)',
               borderBottom: '1px solid var(--border)',
             }}
-            onClick={() => isMinimized && setIsMinimized(false)}
           >
             <div className="flex items-center gap-2">
               <div
@@ -216,22 +215,22 @@ export function SahayakChatbot() {
                 <p className="text-[10px]" style={{ color: 'var(--text3)' }}>PropelERP AI Assistant</p>
               </div>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <button
                 onClick={(e) => { e.stopPropagation(); setIsMinimized(!isMinimized); }}
-                className="p-1.5 rounded-lg hover:bg-white/10 transition"
-                style={{ color: 'var(--text)' }}
+                className="w-8 h-8 rounded-lg flex items-center justify-center transition"
+                style={{ background: 'rgba(255,255,255,0.1)', color: '#fff' }}
                 data-testid="sahayak-minimize-btn"
               >
-                {isMinimized ? <Maximize2 size={14} /> : <Minimize2 size={14} />}
+                {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); toggleChat(); }}
-                className="p-1.5 rounded-lg hover:bg-red-500/20 transition"
-                style={{ color: 'var(--text)' }}
+                className="w-8 h-8 rounded-lg flex items-center justify-center transition hover:bg-red-500"
+                style={{ background: 'rgba(255,80,80,0.8)', color: '#fff' }}
                 data-testid="sahayak-close-btn"
               >
-                <X size={16} />
+                <X size={18} />
               </button>
             </div>
           </div>

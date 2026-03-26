@@ -7,13 +7,13 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: {
-    default: 'PropelERP — AI-Powered Property Management',
-    template: '%s | PropelERP',
+    default: 'Supratik ERP — Property Management System',
+    template: '%s | Supratik ERP',
   },
-  description: 'Enterprise property management ERP with AI intelligence. Leasing, Finance, HR, Maintenance and more.',
-  metadataBase: new URL('https://propel.wisewit.ai'),
+  description: 'Enterprise property management ERP with AI intelligence for Supratik Properties.',
+  metadataBase: new URL('https://propelerp.wisewit.ai'),
   openGraph: {
-    siteName: 'PropelERP',
+    siteName: 'Supratik ERP',
     locale: 'en_IN',
     type: 'website',
   },
