@@ -77,3 +77,7 @@ chainlit.md
 !.env.example
 !.env.production
 !.env.docker
+-e 
+# Environment files
+*.env
+*.env.*
