@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Building2, FileText, DollarSign, Wrench,
   Users, Brain, Settings, Bell, Search, LogOut,
   ChevronRight, Workflow, FileBarChart2, FolderOpen, UserCog,
-  Tag, ShoppingCart, Building, Menu, X,
+  Tag, ShoppingCart, Building, Menu, X, Camera,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { SahayakChatbot } from './SahayakChatbot';
@@ -30,6 +30,7 @@ const NAV_SECTIONS = [
       { label: 'Sales',             href: '/dashboard/sales',          icon: Tag },
       { label: 'Maintenance',       href: '/dashboard/maintenance',    icon: Wrench, badge: 5 },
       { label: 'Facility',          href: '/dashboard/facility',       icon: Building },
+      { label: 'CCTV & Security',   href: '/dashboard/security',       icon: Camera },
     ],
   },
   {

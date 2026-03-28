@@ -12,12 +12,7 @@ type Message = {
   timestamp: Date;
 };
 
-const QUICK_PROMPTS = [
-  'Revenue this month',
-  'Occupancy rates',
-  'Churn risks',
-  'GST compliance',
-];
+const QUICK_PROMPTS = ['Revenue this month', 'Occupancy rates', 'Churn risks', 'GST compliance'];
 
 export function SahayakChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -114,78 +109,88 @@ export function SahayakChatbot() {
       .replace(/\n/g, '<br/>');
   };
 
+  const closeChat = () => {
+    setIsOpen(false);
+    setIsMinimized(false);
+  };
+
   return (
     <>
       {/* Floating Button */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:shadow-2xl"
+          className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110"
           style={{
             background: 'linear-gradient(135deg, #203A2B 0%, #36684B 100%)',
             boxShadow: '0 8px 32px rgba(32,58,43,0.4)',
           }}
           data-testid="sahayak-chat-button"
         >
-          <MessageCircle size={26} className="text-white" />
+          <MessageCircle size={28} className="text-white" />
         </button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
         <div
-          className="fixed z-50 transition-all duration-300 rounded-2xl overflow-hidden"
+          className="fixed z-[9999] rounded-2xl overflow-visible"
           style={{
             bottom: '24px',
             right: '24px',
             width: isMinimized ? '320px' : '400px',
-            height: isMinimized ? '64px' : '520px',
+            height: isMinimized ? '70px' : '540px',
             background: '#FFFFFF',
             border: '1px solid #E8E2D9',
-            boxShadow: '0 20px 60px rgba(32,58,43,0.15), 0 8px 24px rgba(0,0,0,0.1)',
+            boxShadow: '0 20px 60px rgba(32,58,43,0.2), 0 8px 24px rgba(0,0,0,0.15)',
           }}
           data-testid="sahayak-chat-window"
         >
+          {/* CLOSE BUTTON - OUTSIDE THE HEADER */}
+          <button
+            onClick={closeChat}
+            className="absolute -top-3 -right-3 w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 z-[10000]"
+            style={{
+              background: '#DC2626',
+              border: '3px solid white',
+              boxShadow: '0 4px 12px rgba(220,38,38,0.4)',
+            }}
+            data-testid="sahayak-close-btn"
+          >
+            <X size={22} className="text-white" strokeWidth={3} />
+          </button>
+
           {/* Header */}
           <div
             className="flex items-center justify-between px-4"
             style={{
-              height: '64px',
+              height: '70px',
               background: 'linear-gradient(135deg, #203A2B 0%, #2A4C38 100%)',
+              borderRadius: '16px 16px 0 0',
             }}
           >
             <div className="flex items-center gap-3">
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                className="w-11 h-11 rounded-xl flex items-center justify-center"
                 style={{ background: 'rgba(255,255,255,0.15)' }}
               >
-                <Sparkles size={22} className="text-white" />
+                <Sparkles size={24} className="text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-white text-base">Sahayak</h3>
+                <h3 className="font-semibold text-white text-lg">Sahayak</h3>
                 <p className="text-xs text-green-200">AI Assistant</p>
               </div>
             </div>
             
-            {/* Control Buttons */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setIsMinimized(!isMinimized)}
-                className="w-9 h-9 rounded-lg flex items-center justify-center transition-all hover:bg-white/20"
-                style={{ background: 'rgba(255,255,255,0.1)' }}
-                data-testid="sahayak-minimize-btn"
-              >
-                {isMinimized ? <Maximize2 size={18} className="text-white" /> : <Minimize2 size={18} className="text-white" />}
-              </button>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="w-9 h-9 rounded-lg flex items-center justify-center transition-all"
-                style={{ background: '#EF4444' }}
-                data-testid="sahayak-close-btn"
-              >
-                <X size={20} className="text-white" />
-              </button>
-            </div>
+            {/* Minimize Button */}
+            <button
+              onClick={() => setIsMinimized(!isMinimized)}
+              className="w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:bg-white/20"
+              style={{ background: 'rgba(255,255,255,0.1)' }}
+              data-testid="sahayak-minimize-btn"
+            >
+              {isMinimized ? <Maximize2 size={20} className="text-white" /> : <Minimize2 size={20} className="text-white" />}
+            </button>
           </div>
 
           {/* Chat Body */}
@@ -194,7 +199,7 @@ export function SahayakChatbot() {
               {/* Messages */}
               <div
                 className="overflow-y-auto p-4 space-y-4"
-                style={{ height: 'calc(100% - 180px)', background: '#FDFBF7' }}
+                style={{ height: 'calc(100% - 190px)', background: '#FDFBF7' }}
               >
                 {messages.map((message) => (
                   <div
@@ -244,7 +249,7 @@ export function SahayakChatbot() {
               </div>
 
               {/* Input */}
-              <div className="p-4" style={{ background: '#FFFFFF', borderTop: '1px solid #E8E2D9' }}>
+              <div className="p-4" style={{ background: '#FFFFFF', borderTop: '1px solid #E8E2D9', borderRadius: '0 0 16px 16px' }}>
                 <div className="flex gap-3">
                   <input
                     ref={inputRef}
@@ -254,7 +259,7 @@ export function SahayakChatbot() {
                     onKeyDown={handleKeyDown}
                     placeholder="Ask Sahayak anything…"
                     disabled={isLoading}
-                    className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none transition-all"
+                    className="flex-1 px-4 py-3 rounded-xl text-sm outline-none transition-all"
                     style={{
                       background: '#FDFBF7',
                       border: '1px solid #E8E2D9',
@@ -265,13 +270,13 @@ export function SahayakChatbot() {
                   <button
                     onClick={() => sendMessage()}
                     disabled={!input.trim() || isLoading}
-                    className="w-11 h-11 rounded-xl flex items-center justify-center transition-all disabled:opacity-40"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center transition-all disabled:opacity-40"
                     style={{
                       background: input.trim() ? '#203A2B' : '#E8E2D9',
                     }}
                     data-testid="sahayak-send-btn"
                   >
-                    <Send size={18} className="text-white" />
+                    <Send size={20} className="text-white" />
                   </button>
                 </div>
               </div>
@@ -291,20 +296,20 @@ function getDemoResponse(msg: string): string {
   }
   
   if (m.includes('occupancy') || m.includes('vacant')) {
-    return "🏢 **Portfolio Occupancy:**\n\n• Supratik Exotica: **94%**\n• Supratik Elegance: **98%** (Ready-to-Move)\n• Supratik Vista: **87%**\n• Lifestyle (Balasore): **72%**\n\n**Overall: 89%** ✓";
+    return "🏢 **Portfolio Occupancy:**\n\n• Supratik Exotica: **94%**\n• Supratik Elegance: **98%**\n• Supratik Vista: **87%**\n• Lifestyle: **72%**\n\n**Overall: 89%** ✓";
   }
   
   if (m.includes('churn') || m.includes('risk')) {
-    return "⚠️ **Churn Risk Alert:**\n\n• Unit 4A (Exotica): 65% risk\n• Plot B12 (Lifestyle): 48% risk\n\nRecommend proactive outreach this week.";
+    return "⚠️ **Churn Risk Alert:**\n\n• Unit 4A (Exotica): 65% risk\n• Plot B12 (Lifestyle): 48% risk\n\nRecommend proactive outreach.";
   }
   
   if (m.includes('gst') || m.includes('compliance') || m.includes('tax')) {
-    return "📋 **GST & Compliance Status:**\n\n• GSTR-1 (Nov): ✅ Filed\n• GSTR-3B (Nov): ✅ Filed\n• TDS Q3: ⏳ Due Dec 31\n• Property Tax: ✅ Paid\n\n**Action:** TDS filing due in 5 days";
+    return "📋 **GST & Compliance:**\n\n• GSTR-1: ✅ Filed\n• GSTR-3B: ✅ Filed\n• TDS Q3: ⏳ Due Dec 31\n• Property Tax: ✅ Paid";
   }
   
   if (m.includes('maintenance')) {
-    return "🔧 **Maintenance Summary:**\n\n• Open tickets: **12**\n• Critical: 2 (Elevator, Plumbing)\n• Scheduled: 8\n• Avg resolution: 2.3 days";
+    return "🔧 **Maintenance:**\n\n• Open tickets: **12**\n• Critical: 2\n• Avg resolution: 2.3 days";
   }
   
-  return "I can help with **revenue, occupancy, churn risks, GST compliance**, and **maintenance alerts**.\n\nTry asking specific questions!";
+  return "I can help with **revenue, occupancy, churn risks, GST compliance**, and **maintenance**.\n\nTry asking specific questions!";
 }
