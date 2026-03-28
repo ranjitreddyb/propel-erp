@@ -16,7 +16,7 @@ const QUICK_PROMPTS = [
   'Revenue this month',
   'Occupancy rates',
   'Churn risks',
-  'Maintenance alerts',
+  'GST compliance',
 ];
 
 export function SahayakChatbot() {
@@ -26,38 +26,24 @@ export function SahayakChatbot() {
     {
       id: '1',
       role: 'assistant',
-      content: "Hello! I'm **Sahayak**, your PropelERP AI assistant. I can help you with:\n\n• Revenue & financial analysis\n• Occupancy rates across properties\n• Tenant churn risk predictions\n• Maintenance alerts & scheduling\n\nHow can I help you today?",
+      content: "Hello! I'm **Sahayak**, your AI assistant. I can help with:\n\n• Revenue & financial insights\n• Occupancy rates\n• Tenant churn risks\n• GST & compliance\n• Maintenance alerts\n\nHow can I assist you today?",
       timestamp: new Date(),
     },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Focus input when chat opens
   useEffect(() => {
     if (isOpen && !isMinimized) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [isOpen, isMinimized]);
-
-  // Bouncing animation interval
-  useEffect(() => {
-    if (!isOpen) {
-      const interval = setInterval(() => {
-        setIsAnimating(true);
-        setTimeout(() => setIsAnimating(false), 1000);
-      }, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [isOpen]);
 
   const sendMessage = useCallback(async (text?: string) => {
     const messageText = text || input.trim();
@@ -75,63 +61,40 @@ export function SahayakChatbot() {
     setIsLoading(true);
 
     try {
-      // Get company from localStorage
       const companyData = localStorage.getItem('propel_company');
       const company = companyData ? JSON.parse(companyData) : { id: 'default' };
+      const history = messages.slice(-6).map((m) => ({ role: m.role, content: m.content }));
 
-      // Build history for context
-      const history = messages.slice(-6).map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
-
-      // The AI_ENGINE_URL may be either:
-      // - Direct: http://localhost:8001 (local dev) → /api/v1/chat
-      // - Via Nginx proxy: https://propelerp.wisewit.ai/ai → /chat (Nginx adds /api/v1/)
       const isNginxProxy = AI_ENGINE_URL.includes('/ai');
-      const chatEndpoint = isNginxProxy 
-        ? `${AI_ENGINE_URL}/chat`  // Nginx proxy handles /api/v1 prefix
-        : `${AI_ENGINE_URL}/api/v1/chat`;  // Direct call
+      const chatEndpoint = isNginxProxy ? `${AI_ENGINE_URL}/chat` : `${AI_ENGINE_URL}/api/v1/chat`;
 
       const response = await fetch(chatEndpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: messageText,
-          history,
-          company_id: company.id,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: messageText, history, company_id: company.id }),
       });
 
       let assistantContent = '';
-
       if (response.ok) {
         const data = await response.json();
-        assistantContent = data.response || data.text || 'I received your message but couldn\'t generate a response.';
+        assistantContent = data.response || data.text || getDemoResponse(messageText);
       } else {
-        // Fallback to demo responses if AI Engine is unavailable
         assistantContent = getDemoResponse(messageText);
       }
 
-      const assistantMessage: Message = {
+      setMessages((prev) => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: assistantContent,
         timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch (error) {
-      // Fallback to demo responses on network error
-      const assistantMessage: Message = {
+      }]);
+    } catch {
+      setMessages((prev) => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: getDemoResponse(messageText),
         timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+      }]);
     } finally {
       setIsLoading(false);
     }
@@ -144,14 +107,9 @@ export function SahayakChatbot() {
     }
   };
 
-  const toggleChat = () => {
-    setIsOpen(!isOpen);
-    setIsMinimized(false);
-  };
-
   const formatContent = (content: string) => {
     return content
-      .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
       .replace(/\n/g, '<br/>');
   };
@@ -161,66 +119,58 @@ export function SahayakChatbot() {
       {/* Floating Button */}
       {!isOpen && (
         <button
-          onClick={toggleChat}
-          className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 ${
-            isAnimating ? 'animate-bounce' : ''
-          }`}
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 hover:shadow-2xl"
           style={{
-            background: 'linear-gradient(135deg, #4f8ef7 0%, #7c5cfc 50%, #00d4aa 100%)',
-            boxShadow: '0 4px 20px rgba(79,142,247,0.5), 0 0 40px rgba(124,92,252,0.3)',
+            background: 'linear-gradient(135deg, #203A2B 0%, #36684B 100%)',
+            boxShadow: '0 8px 32px rgba(32,58,43,0.4)',
           }}
           data-testid="sahayak-chat-button"
-          aria-label="Open Sahayak AI Assistant"
         >
-          <MessageCircle size={24} className="text-white" />
-          <span
-            className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold text-white"
-            style={{ background: 'var(--accent5)' }}
-          >
-            AI
-          </span>
+          <MessageCircle size={26} className="text-white" />
         </button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
         <div
-          className={`fixed z-50 transition-all duration-300 shadow-2xl rounded-2xl overflow-hidden ${
-            isMinimized ? 'bottom-6 right-6 w-80 h-16' : 'bottom-6 right-6 w-[380px]'
-          }`}
+          className="fixed z-50 transition-all duration-300 rounded-2xl overflow-hidden"
           style={{
-            background: 'var(--surface)',
-            border: '1px solid rgba(79,142,247,0.3)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 60px rgba(79,142,247,0.2)',
-            height: isMinimized ? '60px' : '500px',
-            maxHeight: 'calc(100vh - 100px)',
+            bottom: '24px',
+            right: '24px',
+            width: isMinimized ? '320px' : '400px',
+            height: isMinimized ? '64px' : '520px',
+            background: '#FFFFFF',
+            border: '1px solid #E8E2D9',
+            boxShadow: '0 20px 60px rgba(32,58,43,0.15), 0 8px 24px rgba(0,0,0,0.1)',
           }}
           data-testid="sahayak-chat-window"
         >
-          {/* Header - Always Visible */}
+          {/* Header */}
           <div
-            className="flex items-center justify-between px-4 py-3"
+            className="flex items-center justify-between px-4"
             style={{
-              background: 'linear-gradient(135deg, #1a365d 0%, #2d3748 100%)',
-              borderBottom: '1px solid rgba(79,142,247,0.3)',
-              minHeight: '56px',
+              height: '64px',
+              background: 'linear-gradient(135deg, #203A2B 0%, #2A4C38 100%)',
             }}
           >
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #4f8ef7, #7c5cfc)' }}
+                style={{ background: 'rgba(255,255,255,0.15)' }}
               >
-                <Sparkles size={20} className="text-white" />
+                <Sparkles size={22} className="text-white" />
               </div>
               <div>
-                <h3 className="font-bold text-base text-white">Sahayak</h3>
-                <p className="text-xs text-blue-300">Supratik AI Assistant</p>
+                <h3 className="font-semibold text-white text-base">Sahayak</h3>
+                <p className="text-xs text-green-200">AI Assistant</p>
               </div>
             </div>
+            
+            {/* Control Buttons */}
             <div className="flex items-center gap-2">
               <button
-                onClick={(e) => { e.stopPropagation(); setIsMinimized(!isMinimized); }}
+                onClick={() => setIsMinimized(!isMinimized)}
                 className="w-9 h-9 rounded-lg flex items-center justify-center transition-all hover:bg-white/20"
                 style={{ background: 'rgba(255,255,255,0.1)' }}
                 data-testid="sahayak-minimize-btn"
@@ -228,9 +178,9 @@ export function SahayakChatbot() {
                 {isMinimized ? <Maximize2 size={18} className="text-white" /> : <Minimize2 size={18} className="text-white" />}
               </button>
               <button
-                onClick={(e) => { e.stopPropagation(); toggleChat(); }}
-                className="w-9 h-9 rounded-lg flex items-center justify-center transition-all hover:bg-red-600"
-                style={{ background: '#dc2626' }}
+                onClick={() => setIsOpen(false)}
+                className="w-9 h-9 rounded-lg flex items-center justify-center transition-all"
+                style={{ background: '#EF4444' }}
                 data-testid="sahayak-close-btn"
               >
                 <X size={20} className="text-white" />
@@ -243,8 +193,8 @@ export function SahayakChatbot() {
             <>
               {/* Messages */}
               <div
-                className="flex-1 overflow-y-auto p-4 space-y-4"
-                style={{ height: 'calc(100% - 140px)' }}
+                className="overflow-y-auto p-4 space-y-4"
+                style={{ height: 'calc(100% - 180px)', background: '#FDFBF7' }}
               >
                 {messages.map((message) => (
                   <div
@@ -252,20 +202,13 @@ export function SahayakChatbot() {
                     className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[85%] px-3.5 py-2.5 text-sm leading-relaxed ${
+                      className={`max-w-[85%] px-4 py-3 text-sm leading-relaxed ${
                         message.role === 'user' ? 'rounded-2xl rounded-br-sm' : 'rounded-2xl rounded-bl-sm'
                       }`}
                       style={
                         message.role === 'user'
-                          ? {
-                              background: 'linear-gradient(135deg, var(--accent), var(--accent2))',
-                              color: '#fff',
-                            }
-                          : {
-                              background: 'var(--surface2)',
-                              border: '1px solid var(--border)',
-                              color: 'var(--text2)',
-                            }
+                          ? { background: '#203A2B', color: '#fff' }
+                          : { background: '#FFFFFF', border: '1px solid #E8E2D9', color: '#1A1C1A' }
                       }
                       dangerouslySetInnerHTML={{ __html: formatContent(message.content) }}
                     />
@@ -275,10 +218,10 @@ export function SahayakChatbot() {
                   <div className="flex justify-start">
                     <div
                       className="px-4 py-3 rounded-2xl rounded-bl-sm flex items-center gap-2"
-                      style={{ background: 'var(--surface2)', border: '1px solid var(--border)' }}
+                      style={{ background: '#FFFFFF', border: '1px solid #E8E2D9' }}
                     >
-                      <Loader2 size={14} className="animate-spin" style={{ color: 'var(--accent)' }} />
-                      <span className="text-sm" style={{ color: 'var(--text3)' }}>Sahayak is thinking…</span>
+                      <Loader2 size={16} className="animate-spin" style={{ color: '#203A2B' }} />
+                      <span className="text-sm" style={{ color: '#7A756C' }}>Thinking…</span>
                     </div>
                   </div>
                 )}
@@ -286,18 +229,14 @@ export function SahayakChatbot() {
               </div>
 
               {/* Quick Prompts */}
-              <div className="px-4 pb-2 flex flex-wrap gap-1.5">
+              <div className="px-4 py-2 flex flex-wrap gap-2" style={{ background: '#FFFFFF', borderTop: '1px solid #E8E2D9' }}>
                 {QUICK_PROMPTS.map((prompt) => (
                   <button
                     key={prompt}
                     onClick={() => sendMessage(prompt)}
                     disabled={isLoading}
-                    className="text-[10px] px-2.5 py-1 rounded-full border transition-all hover:bg-white/5 disabled:opacity-50"
-                    style={{
-                      background: 'rgba(79,142,247,0.1)',
-                      borderColor: 'rgba(79,142,247,0.25)',
-                      color: 'var(--accent)',
-                    }}
+                    className="text-xs px-3 py-1.5 rounded-full border transition-all hover:bg-[#F3EFEA] disabled:opacity-50"
+                    style={{ background: '#FDFBF7', borderColor: '#E8E2D9', color: '#203A2B' }}
                   >
                     {prompt}
                   </button>
@@ -305,8 +244,8 @@ export function SahayakChatbot() {
               </div>
 
               {/* Input */}
-              <div className="p-3 border-t" style={{ borderColor: 'var(--border)' }}>
-                <div className="flex gap-2">
+              <div className="p-4" style={{ background: '#FFFFFF', borderTop: '1px solid #E8E2D9' }}>
+                <div className="flex gap-3">
                   <input
                     ref={inputRef}
                     type="text"
@@ -315,24 +254,24 @@ export function SahayakChatbot() {
                     onKeyDown={handleKeyDown}
                     placeholder="Ask Sahayak anything…"
                     disabled={isLoading}
-                    className="flex-1 px-3 py-2 rounded-xl text-sm outline-none transition-all"
+                    className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none transition-all"
                     style={{
-                      background: 'var(--bg)',
-                      border: '1px solid var(--border)',
-                      color: 'var(--text)',
+                      background: '#FDFBF7',
+                      border: '1px solid #E8E2D9',
+                      color: '#1A1C1A',
                     }}
                     data-testid="sahayak-input"
                   />
                   <button
                     onClick={() => sendMessage()}
                     disabled={!input.trim() || isLoading}
-                    className="w-10 h-10 rounded-xl flex items-center justify-center transition-all disabled:opacity-50"
+                    className="w-11 h-11 rounded-xl flex items-center justify-center transition-all disabled:opacity-40"
                     style={{
-                      background: input.trim() ? 'linear-gradient(135deg, var(--accent), var(--accent2))' : 'var(--surface2)',
+                      background: input.trim() ? '#203A2B' : '#E8E2D9',
                     }}
                     data-testid="sahayak-send-btn"
                   >
-                    <Send size={16} className="text-white" />
+                    <Send size={18} className="text-white" />
                   </button>
                 </div>
               </div>
@@ -344,33 +283,28 @@ export function SahayakChatbot() {
   );
 }
 
-// Demo responses when AI Engine is unavailable
 function getDemoResponse(msg: string): string {
   const m = msg.toLowerCase();
   
-  if (m.includes('revenue') || m.includes('income') || m.includes('money')) {
-    return "📊 **This month's financials:**\n\n• Revenue: **₹4.85 Crore**\n• Rental Income: ₹4.2Cr\n• Lease premiums: ₹42L\n• Facility charges: ₹23L\n• ↑ 12.4% vs last month\n\n💡 *Navigate to Finance → Trial Balance for details*";
+  if (m.includes('revenue') || m.includes('income')) {
+    return "📊 **This month's revenue:**\n\n• Total: **₹2.85 Crore**\n• Rental Income: ₹2.4Cr\n• Maintenance: ₹32L\n• Parking: ₹13L\n\n↑ 8.2% vs last month";
   }
   
-  if (m.includes('occupancy') || m.includes('vacant') || m.includes('occupied')) {
-    return "🏢 **Portfolio Occupancy:**\n\n• Tower A (Commercial): **97%** (175/180 units)\n• Tower B (Residential): **91%** (109/120 units)\n• Block C (Retail): **78%** (47/60 shops)\n• Industrial: **100%** (12/12)\n\n**Overall: 94.2%** ✅ Market avg: 87%";
+  if (m.includes('occupancy') || m.includes('vacant')) {
+    return "🏢 **Portfolio Occupancy:**\n\n• Supratik Exotica: **94%**\n• Supratik Elegance: **98%** (Ready-to-Move)\n• Supratik Vista: **87%**\n• Lifestyle (Balasore): **72%**\n\n**Overall: 89%** ✓";
   }
   
-  if (m.includes('churn') || m.includes('risk') || m.includes('leaving')) {
-    return "⚠️ **High-Risk Tenants:**\n\n• **Unit 4A (TechStar):** 78% risk — payment delays + expiring in 45 days\n• **Unit 7B (Gourmet Co):** 52% risk — market alternatives scouted\n• **Unit 9D (StartupX):** 45% risk — downsizing signals\n\n🎯 *AI retention packages prepared. Recommend outreach this week.*";
+  if (m.includes('churn') || m.includes('risk')) {
+    return "⚠️ **Churn Risk Alert:**\n\n• Unit 4A (Exotica): 65% risk\n• Plot B12 (Lifestyle): 48% risk\n\nRecommend proactive outreach this week.";
   }
   
-  if (m.includes('maintenance') || m.includes('repair') || m.includes('fix')) {
-    return "🔧 **Maintenance Alerts:**\n\n• 🔴 **CRITICAL:** HVAC Block B — failure predicted in 12 days\n• 🟡 **HIGH:** Water leak Tower A Floor 8 — in progress\n• 🟢 **SCHEDULED:** Fire inspection all blocks — due 26 Mar\n\nTotal open work orders: **18** (3 critical)";
+  if (m.includes('gst') || m.includes('compliance') || m.includes('tax')) {
+    return "📋 **GST & Compliance Status:**\n\n• GSTR-1 (Nov): ✅ Filed\n• GSTR-3B (Nov): ✅ Filed\n• TDS Q3: ⏳ Due Dec 31\n• Property Tax: ✅ Paid\n\n**Action:** TDS filing due in 5 days";
   }
   
-  if (m.includes('tenant') || m.includes('lease')) {
-    return "📋 **Lease Renewals Due:**\n\n• **TechStar (4A):** Expires Apr 15 — ₹4.8L/month\n• **Gourmet Co (7B):** Expires May 01 — ₹1.2L/month\n• **MegaCorp (12C):** Expires Jun 30 — ₹12.5L/month\n\n💡 *3 leases need attention in next 90 days*";
+  if (m.includes('maintenance')) {
+    return "🔧 **Maintenance Summary:**\n\n• Open tickets: **12**\n• Critical: 2 (Elevator, Plumbing)\n• Scheduled: 8\n• Avg resolution: 2.3 days";
   }
   
-  if (m.includes('hello') || m.includes('hi') || m.includes('hey')) {
-    return "Hello! 👋 I'm Sahayak, your PropelERP AI assistant. I can help you with:\n\n• **Revenue** & financial insights\n• **Occupancy** rates across properties\n• **Churn risk** predictions\n• **Maintenance** alerts\n\nWhat would you like to know?";
-  }
-  
-  return "🧠 I can help with **revenue analysis, occupancy rates, tenant churn risks, maintenance alerts, and lease renewals**.\n\nTry asking:\n• \"What's our revenue this month?\"\n• \"Show occupancy rates\"\n• \"Any churn risks?\"\n• \"Maintenance alerts today\"";
+  return "I can help with **revenue, occupancy, churn risks, GST compliance**, and **maintenance alerts**.\n\nTry asking specific questions!";
 }

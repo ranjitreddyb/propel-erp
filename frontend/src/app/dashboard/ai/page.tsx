@@ -4,57 +4,69 @@ import { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { aiApi } from '@/services/api';
 import { Card, PageHeader, Button, Grid, KpiCard, Loading } from '@/components/ui';
-import { Brain, Send, Zap, TrendingUp, AlertTriangle, Wrench, FileText, Home, Activity, Lightbulb } from 'lucide-react';
+import { Brain, Send, Zap, TrendingUp, AlertTriangle, Wrench, FileText, Home, Activity, Lightbulb, Receipt } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 type Message = { role: 'user' | 'assistant'; content: string };
 
 const AI_MODULES = [
   {
-    icon: <TrendingUp size={20} />, color: 'rgba(79,142,247,.15)', border: 'rgba(79,142,247,.25)',
+    icon: <TrendingUp size={20} />, color: 'rgba(32,58,43,.1)', border: 'rgba(32,58,43,.2)',
     title: 'Predictive Revenue Engine',
     desc: 'ML models forecast rental income 12 months ahead with 94% accuracy using historical lease and market data.',
-    metric: '₹5.1 Crore', metricLabel: 'Q1 FY27 Forecast', metricColor: 'var(--accent3)',
+    metric: '₹5.1 Crore', metricLabel: 'Q1 FY27 Forecast', metricColor: '#36684B',
     metricSub: '↑ 21% YoY · Confidence 94%',
     action: 'View Projections',
   },
   {
-    icon: <AlertTriangle size={20} />, color: 'rgba(247,79,122,.15)', border: 'rgba(247,79,122,.25)',
+    icon: <AlertTriangle size={20} />, color: 'rgba(158,60,60,.1)', border: 'rgba(158,60,60,.2)',
     title: 'Tenant Churn Risk Predictor',
     desc: 'Analyses payment patterns, lease age, and communication gaps to flag attrition risk 90 days ahead.',
     risks: [{ name: 'Unit 4A — TechStar', pct: 78, level: 'HIGH' }, { name: 'Unit 7B — Gourmet Co', pct: 52, level: 'MED' }, { name: 'Unit 12C — MegaCorp', pct: 12, level: 'LOW' }],
     action: 'Generate Retention Plan',
   },
   {
-    icon: <Wrench size={20} />, color: 'rgba(0,212,170,.15)', border: 'rgba(0,212,170,.25)',
+    icon: <Wrench size={20} />, color: 'rgba(54,104,75,.1)', border: 'rgba(54,104,75,.2)',
     title: 'Predictive Maintenance AI',
     desc: 'IoT sensor data + repair history power failure-prediction models for HVAC, lifts, and electrical systems.',
-    alerts: [{ label: '⚠️ HVAC Block B — 12 days', sub: 'Compressor efficiency drop 23%', color: 'var(--accent5)' }, { label: '⚡ Elevator Tower A — 28 days', sub: 'Motor vibration above baseline', color: 'var(--accent4)' }],
+    alerts: [{ label: '⚠️ HVAC Block B — 12 days', sub: 'Compressor efficiency drop 23%', color: '#9E3C3C' }, { label: '⚡ Elevator Tower A — 28 days', sub: 'Motor vibration above baseline', color: '#D6A345' }],
     action: 'Auto-Schedule Maintenance',
   },
   {
-    icon: <FileText size={20} />, color: 'rgba(124,92,252,.15)', border: 'rgba(124,92,252,.25)',
+    icon: <FileText size={20} />, color: 'rgba(207,161,90,.1)', border: 'rgba(207,161,90,.2)',
     title: 'Contract Intelligence Engine',
     desc: 'NLP reads and extracts key clauses, flags anomalies, and summarises lease and vendor contracts.',
     tags: ['✅ Rent Escalation: 8% p.a.', '⚠️ Force majeure missing', '📌 Break clause: Year 2'],
     action: 'Analyse New Contract',
   },
   {
-    icon: <Home size={20} />, color: 'rgba(247,184,79,.15)', border: 'rgba(247,184,79,.25)',
+    icon: <Receipt size={20} />, color: 'rgba(32,58,43,.1)', border: 'rgba(32,58,43,.25)',
+    title: 'Auto-GST & Compliance AI',
+    desc: 'Automates GST filing, TDS calculations, property tax reminders, and RERA compliance tracking for all properties.',
+    compliance: [
+      { label: 'GSTR-1 (Nov)', status: '✅ Filed', date: 'Nov 11' },
+      { label: 'GSTR-3B (Nov)', status: '✅ Filed', date: 'Nov 20' },
+      { label: 'TDS Q3', status: '⏳ Pending', date: 'Due Dec 31' },
+      { label: 'Property Tax FY26', status: '✅ Paid', date: 'Apr 15' },
+    ],
+    action: 'View Compliance Dashboard',
+  },
+  {
+    icon: <Home size={20} />, color: 'rgba(207,161,90,.1)', border: 'rgba(207,161,90,.2)',
     title: 'AI Property Valuation',
     desc: 'Real-time valuations using comparable sales, location intelligence, rental yield, and macro indicators.',
-    valuations: [{ name: 'Tower A', val: '₹142Cr', chg: '↑ 12%' }, { name: 'Tower B', val: '₹98Cr', chg: '↑ 8%' }, { name: 'Block C', val: '₹45Cr', chg: '↑ 4%' }],
+    valuations: [{ name: 'Supratik Exotica', val: '₹142Cr', chg: '↑ 12%' }, { name: 'Supratik Elegance', val: '₹98Cr', chg: '↑ 8%' }, { name: 'Supratik Lifestyle', val: '₹45Cr', chg: '↑ 4%' }],
     action: 'Full Valuation Report',
   },
   {
-    icon: <Activity size={20} />, color: 'rgba(79,142,247,.15)', border: 'rgba(79,142,247,.25)',
+    icon: <Activity size={20} />, color: 'rgba(32,58,43,.1)', border: 'rgba(32,58,43,.2)',
     title: 'Tenant Sentiment AI',
     desc: 'Analyses service requests, response times, and communication tone to score tenant satisfaction in real-time.',
     score: 87,
     action: 'Full Sentiment Report',
   },
   {
-    icon: <Lightbulb size={20} />, color: 'rgba(0,212,170,.15)', border: 'rgba(0,212,170,.25)',
+    icon: <Lightbulb size={20} />, color: 'rgba(54,104,75,.1)', border: 'rgba(54,104,75,.2)',
     title: 'Energy Optimization AI',
     desc: 'Monitors IoT energy sensors to auto-schedule HVAC and lighting for optimal efficiency and carbon reduction.',
     savings: [{ label: '💡 Lighting auto-dim', saved: '₹18K/month' }, { label: '❄️ HVAC scheduling', saved: '15% reduction' }, { label: '☀️ Solar ROI', saved: '3.2 yr payback' }],
@@ -168,10 +180,10 @@ export default function AIPage() {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm" style={{ color: 'var(--text2)' }}>Satisfaction Score</span>
-                  <span className="text-2xl font-bold" style={{ color: 'var(--accent3)' }}>{mod.score}/100</span>
+                  <span className="text-2xl font-bold" style={{ color: '#36684B' }}>{mod.score}/100</span>
                 </div>
                 <div className="h-2 rounded-full overflow-hidden" style={{ background: 'var(--surface3)' }}>
-                  <div className="h-full rounded-full" style={{ width: `${mod.score}%`, background: 'linear-gradient(90deg,var(--accent3),var(--accent))' }} />
+                  <div className="h-full rounded-full" style={{ width: `${mod.score}%`, background: 'linear-gradient(90deg, #36684B, #203A2B)' }} />
                 </div>
               </div>
             )}
@@ -180,7 +192,20 @@ export default function AIPage() {
                 {mod.savings.map(s => (
                   <div key={s.label} className="flex justify-between text-xs px-2.5 py-1.5 rounded-lg" style={{ background: 'var(--surface2)' }}>
                     <span style={{ color: 'var(--text2)' }}>{s.label}</span>
-                    <span className="font-semibold" style={{ color: 'var(--accent3)' }}>{s.saved}</span>
+                    <span className="font-semibold" style={{ color: '#36684B' }}>{s.saved}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {(mod as any).compliance && (
+              <div className="space-y-1.5">
+                {(mod as any).compliance.map((c: {label: string; status: string; date: string}) => (
+                  <div key={c.label} className="flex justify-between items-center text-xs px-2.5 py-2 rounded-lg" style={{ background: 'var(--surface2)' }}>
+                    <span style={{ color: 'var(--text)' }}>{c.label}</span>
+                    <div className="text-right">
+                      <span className="font-semibold">{c.status}</span>
+                      <div className="text-[10px]" style={{ color: 'var(--text3)' }}>{c.date}</div>
+                    </div>
                   </div>
                 ))}
               </div>

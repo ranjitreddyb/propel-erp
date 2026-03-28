@@ -177,25 +177,29 @@ export default function LoginPage() {
     <div
       className="min-h-screen flex items-center justify-center p-4"
       style={{
-        background: 'var(--bg)',
-        backgroundImage: `radial-gradient(ellipse 80% 60% at 50% -10%, rgba(79,142,247,0.18) 0%, transparent 60%),
-                          radial-gradient(ellipse 60% 40% at 80% 50%, rgba(124,92,252,0.12) 0%, transparent 50%)`,
+        background: '#FDFBF7',
+        backgroundImage: `radial-gradient(ellipse 80% 60% at 50% 0%, rgba(32,58,43,0.08) 0%, transparent 60%)`,
       }}
     >
-      <div className="w-full max-w-sm animate-slide-up">
+      <div className="w-full max-w-md animate-slide-up">
         {/* Logo */}
         <div className="text-center mb-8">
           <div
             className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
             style={{
-              background: 'linear-gradient(135deg, #d4a853, #a67c2f)',
-              boxShadow: '0 0 30px rgba(212,168,83,0.4)',
+              background: 'linear-gradient(135deg, #203A2B, #2A4C38)',
+              boxShadow: '0 8px 32px rgba(32,58,43,0.3)',
             }}
           >
             <Building2 size={32} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight" style={{ color: '#d4a853' }}>Supratik</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text2)' }}>
+          <h1 
+            className="text-3xl font-semibold tracking-tight" 
+            style={{ fontFamily: 'Cormorant Garamond, serif', color: '#203A2B' }}
+          >
+            Supratik
+          </h1>
+          <p className="text-sm mt-1" style={{ color: '#7A756C' }}>
             Property Management System
           </p>
         </div>
@@ -203,7 +207,7 @@ export default function LoginPage() {
         {/* Card */}
         <div
           className="rounded-2xl p-8 border"
-          style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
+          style={{ background: '#FFFFFF', borderColor: '#E8E2D9', boxShadow: '0 4px 24px rgba(32,58,43,0.06)' }}
         >
           {step === 'phone' ? (
             <>
