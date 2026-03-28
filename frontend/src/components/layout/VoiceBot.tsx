@@ -58,6 +58,16 @@ export function VoiceBot() {
   const [isResponding, setIsResponding] = useState(false);
   const [currentResponse, setCurrentResponse] = useState('');
   const [detectedLanguage, setDetectedLanguage] = useState('en');
+  const [showLanguageDemo, setShowLanguageDemo] = useState(false);
+
+  // Demo questions for each language
+  const DEMO_QUESTIONS = [
+    { lang: 'hi', label: 'Hindi', question: 'क्या मेरा लीज़ एग्रीमेंट कब समाप्त हो रहा है?' },
+    { lang: 'or', label: 'Odia', question: 'ଏହି ପ୍ରୋଜେକ୍ଟରେ କେତେଟି ଫ୍ଲାଟ୍ ବିକ୍ରି ପାଇଁ ଉପଲବ୍ଧ ଅଛି?' },
+    { lang: 'bn', label: 'Bengali', question: 'এই প্রপার্টিতে মোট কতগুলো অ্যাসেট রেজিস্টার করা আছে?' },
+    { lang: 'en', label: 'English', question: 'What is the status of my maintenance request?' },
+    { lang: 'mr', label: 'Marathi', question: 'सोसायटीमध्ये स्वच्छता आणि सुरक्षा सुविधा कशा व्यवस्थापित केल्या जातात?' },
+  ];
 
   const findMatchingQA = (input: string): { answer: string; language: string } | null => {
     const lowerInput = input.toLowerCase();
@@ -98,47 +108,56 @@ export function VoiceBot() {
     
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
-      recognition.lang = 'hi-IN'; // Supports multiple Indic languages
+      // Use 'en-IN' as base - it handles multiple Indic languages better
+      recognition.lang = 'en-IN';
       recognition.continuous = false;
       recognition.interimResults = true;
+      // Allow multiple language recognition
+      recognition.maxAlternatives = 3;
+      
+      let finalTranscript = '';
       
       recognition.onresult = (event: any) => {
-        const current = event.resultIndex;
-        const result = event.results[current][0].transcript;
-        setTranscript(result);
+        let interim = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            finalTranscript = event.results[i][0].transcript;
+          } else {
+            interim = event.results[i][0].transcript;
+          }
+        }
+        setTranscript(finalTranscript || interim);
       };
       
       recognition.onend = () => {
         setIsListening(false);
-        if (transcript) {
-          respondToQuestion(transcript);
+        const textToProcess = finalTranscript || transcript;
+        if (textToProcess) {
+          respondToQuestion(textToProcess);
         }
       };
       
-      recognition.onerror = () => {
+      recognition.onerror = (event: any) => {
+        console.log('Speech recognition error:', event.error);
         setIsListening(false);
-        // For demo: simulate a random question being asked
-        const randomQA = QA_DATABASE[Math.floor(Math.random() * QA_DATABASE.length)];
-        setTranscript(randomQA.question);
-        setTimeout(() => respondToQuestion(randomQA.question), 500);
+        // For demo: show language selection instead
+        setShowLanguageDemo(true);
       };
       
       recognition.start();
       
-      // Auto-stop after 8 seconds
+      // Auto-stop after 10 seconds
       setTimeout(() => {
         try {
           recognition.stop();
         } catch {}
-      }, 8000);
+      }, 10000);
     } else {
-      // Fallback for browsers without speech recognition - demo mode
+      // Fallback - show language demo selection
       setTimeout(() => {
         setIsListening(false);
-        const randomQA = QA_DATABASE[Math.floor(Math.random() * QA_DATABASE.length)];
-        setTranscript(randomQA.question);
-        respondToQuestion(randomQA.question);
-      }, 2000);
+        setShowLanguageDemo(true);
+      }, 1000);
     }
   };
 
@@ -319,7 +338,7 @@ export function VoiceBot() {
         )}
 
         {/* Demo Questions Hint */}
-        {!transcript && !currentResponse && (
+        {!transcript && !currentResponse && !showLanguageDemo && (
           <div className="mt-4 p-3 rounded-xl text-left" style={{ background: 'var(--surface2)' }}>
             <p className="text-xs font-semibold mb-2" style={{ color: 'var(--text2)' }}>Try asking:</p>
             <ul className="text-xs space-y-1" style={{ color: 'var(--text3)' }}>
@@ -327,6 +346,47 @@ export function VoiceBot() {
               <li>• ଏହି ପ୍ରୋଜେକ୍ଟରେ କେତେଟି ଫ୍ଲାଟ୍ ବିକ୍ରି ପାଇଁ ଉପଲବ୍ଧ? (Odia)</li>
               <li>• What is the status of my maintenance request?</li>
             </ul>
+            <button
+              onClick={() => setShowLanguageDemo(true)}
+              className="mt-3 w-full text-xs font-medium py-2 rounded-lg"
+              style={{ background: 'var(--primary)', color: 'white' }}
+            >
+              Demo: Select a Language
+            </button>
+          </div>
+        )}
+
+        {/* Language Demo Selector */}
+        {showLanguageDemo && !currentResponse && (
+          <div className="mt-4 p-3 rounded-xl" style={{ background: 'var(--surface2)' }}>
+            <p className="text-xs font-semibold mb-3" style={{ color: 'var(--text2)' }}>Select language to demo:</p>
+            <div className="space-y-2">
+              {DEMO_QUESTIONS.map((q) => (
+                <button
+                  key={q.lang}
+                  onClick={() => {
+                    setShowLanguageDemo(false);
+                    setTranscript(q.question);
+                    respondToQuestion(q.question);
+                  }}
+                  className="w-full p-3 rounded-lg text-left transition-all hover:shadow-sm"
+                  style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{q.label}</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded" style={{ background: 'var(--primary)', color: 'white' }}>Demo</span>
+                  </div>
+                  <p className="text-xs truncate" style={{ color: 'var(--text3)' }}>{q.question}</p>
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setShowLanguageDemo(false)}
+              className="mt-3 w-full text-xs font-medium py-2 rounded-lg"
+              style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text2)' }}
+            >
+              Cancel
+            </button>
           </div>
         )}
 

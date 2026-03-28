@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { Card, PageHeader, Button, Grid, Badge } from '@/components/ui';
-import { Camera, Video, Shield, Users, Car, AlertTriangle, Settings, Plus, Eye, Clock, CheckCircle2, Play, Square, Maximize2 } from 'lucide-react';
+import { Camera, Video, Shield, Users, Car, AlertTriangle, Settings, Plus, Eye, Clock, CheckCircle2, Play, Square, Maximize2, Pencil, Trash2, X, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 type CCTVCamera = {
@@ -80,6 +80,8 @@ export default function SecurityPage() {
   const [cameras, setCameras] = useState(DEMO_CAMERAS);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRtspModal, setShowRtspModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingCamera, setEditingCamera] = useState<CCTVCamera | null>(null);
   const [customRtspUrl, setCustomRtspUrl] = useState('');
   const [selectedCamera, setSelectedCamera] = useState<CCTVCamera | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -106,6 +108,27 @@ export default function SecurityPage() {
     : cameras.filter(c => c.property === selectedProperty);
 
   const properties = [...new Set(cameras.map(c => c.property))];
+
+  const handleEditCamera = (camera: CCTVCamera) => {
+    setEditingCamera({ ...camera });
+    setShowEditModal(true);
+  };
+
+  const handleSaveCamera = () => {
+    if (editingCamera) {
+      setCameras(prev => prev.map(c => c.id === editingCamera.id ? editingCamera : c));
+      setShowEditModal(false);
+      setEditingCamera(null);
+      toast.success('Camera updated successfully!');
+    }
+  };
+
+  const handleDeleteCamera = (cameraId: string) => {
+    if (confirm('Are you sure you want to delete this camera?')) {
+      setCameras(prev => prev.filter(c => c.id !== cameraId));
+      toast.success('Camera deleted successfully!');
+    }
+  };
 
   const handleConnectRtsp = () => {
     if (customRtspUrl) {
@@ -370,7 +393,7 @@ export default function SecurityPage() {
                         className="text-[10px] px-2 py-0.5 rounded-full"
                         style={{ background: 'rgba(8,145,178,0.08)', color: 'var(--primary)' }}
                       >
-                        {f === 'face' ? '👤 Face' : f === 'anpr' ? '🚗 ANPR' : f === 'intrusion' ? '🚨 Intrusion' : f === 'attendance' ? '📋 Attendance' : f}
+                        {f === 'face' ? 'Face' : f === 'anpr' ? 'ANPR' : f === 'intrusion' ? 'Intrusion' : f === 'attendance' ? 'Attendance' : f}
                       </span>
                     ))}
                   </div>
@@ -379,6 +402,23 @@ export default function SecurityPage() {
                       {camera.rtspUrl}
                     </div>
                   )}
+                  {/* Edit/Delete Buttons */}
+                  <div className="mt-3 flex gap-2 pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleEditCamera(camera); }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all hover:shadow-sm"
+                      style={{ background: 'rgba(8,145,178,0.1)', color: 'var(--primary)' }}
+                    >
+                      <Pencil size={12} /> Edit
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleDeleteCamera(camera.id); }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all hover:shadow-sm"
+                      style={{ background: 'rgba(239,68,68,0.1)', color: '#EF4444' }}
+                    >
+                      <Trash2 size={12} /> Delete
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -564,6 +604,95 @@ export default function SecurityPage() {
                 onClick={() => { setShowAddModal(false); toast.success('Camera added successfully!'); }}
               >
                 Add Camera
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Camera Modal */}
+      {showEditModal && editingCamera && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowEditModal(false)}>
+          <div
+            className="w-full max-w-md rounded-2xl p-6"
+            style={{ background: 'var(--surface)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>Edit Camera</h3>
+              <button onClick={() => setShowEditModal(false)} className="p-1 rounded hover:bg-[var(--surface2)]">
+                <X size={18} style={{ color: 'var(--text3)' }} />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text2)' }}>Camera Name</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={editingCamera.name}
+                  onChange={(e) => setEditingCamera({ ...editingCamera, name: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text2)' }}>Location</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={editingCamera.location}
+                  onChange={(e) => setEditingCamera({ ...editingCamera, location: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text2)' }}>Property</label>
+                <select
+                  className="form-input"
+                  value={editingCamera.property}
+                  onChange={(e) => setEditingCamera({ ...editingCamera, property: e.target.value })}
+                >
+                  <option>Supratik Exotica</option>
+                  <option>Supratik Elegance</option>
+                  <option>Supratik Vista</option>
+                  <option>Supratik Lifestyle</option>
+                  <option>Seafood Processing Plant</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text2)' }}>RTSP URL</label>
+                <input
+                  type="text"
+                  className="form-input font-mono text-sm"
+                  value={editingCamera.rtspUrl}
+                  onChange={(e) => setEditingCamera({ ...editingCamera, rtspUrl: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text2)' }}>Status</label>
+                <select
+                  className="form-input"
+                  value={editingCamera.status}
+                  onChange={(e) => setEditingCamera({ ...editingCamera, status: e.target.value as any })}
+                >
+                  <option value="online">Online</option>
+                  <option value="offline">Offline</option>
+                  <option value="maintenance">Maintenance</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium"
+                style={{ background: 'var(--surface2)', color: 'var(--text2)' }}
+                onClick={() => setShowEditModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white flex items-center justify-center gap-2"
+                style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))' }}
+                onClick={handleSaveCamera}
+              >
+                <Save size={14} /> Save Changes
               </button>
             </div>
           </div>

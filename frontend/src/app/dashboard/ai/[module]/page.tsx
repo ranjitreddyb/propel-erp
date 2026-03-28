@@ -579,14 +579,17 @@ export default function AIReportPage() {
 
   return (
     <div className="animate-fade-in">
+      <div className="flex items-center gap-2 mb-4">
+        <Button variant="outline" size="sm" onClick={() => router.push('/dashboard/ai')}>
+          <ArrowLeft size={14} /> Back
+        </Button>
+      </div>
+      
       <PageHeader
         title={report.title}
         subtitle={report.subtitle}
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => router.push('/dashboard/ai')}>
-              <ArrowLeft size={14} /> Back
-            </Button>
             <Button variant="outline" size="sm" onClick={() => toast.success('Refreshing AI analysis...')}>
               <RefreshCw size={14} /> Refresh
             </Button>
@@ -598,7 +601,7 @@ export default function AIReportPage() {
       />
       
       <div className="mb-4 p-3 rounded-xl flex items-center gap-3" style={{ background: 'linear-gradient(135deg, rgba(8,145,178,0.1), rgba(217,119,6,0.1))', border: '1px solid rgba(8,145,178,0.2)' }}>
-        <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))' }}>
+        <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white" style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))' }}>
           {report.icon}
         </div>
         <div>

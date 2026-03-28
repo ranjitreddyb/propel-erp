@@ -17,34 +17,27 @@ export function Card({ children, className, hover = false }: {
 
 // ─── KPI Card ─────────────────────────────────────────────
 export function KpiCard({ icon, value, label, change, changeUp, color = 'accent' }: {
-  icon: string; value: string; label: string;
+  icon?: string; value: string; label: string;
   change?: string; changeUp?: boolean; color?: string;
 }) {
   const colorMap: Record<string, string> = {
-    accent:  'rgba(79,142,247,.15)',
-    green:   'rgba(0,212,170,.15)',
-    yellow:  'rgba(247,184,79,.15)',
-    red:     'rgba(247,79,122,.15)',
-    purple:  'rgba(124,92,252,.15)',
+    accent:  'rgba(8,145,178,.12)',
+    green:   'rgba(16,185,129,.12)',
+    yellow:  'rgba(217,119,6,.12)',
+    red:     'rgba(239,68,68,.12)',
+    purple:  'rgba(139,92,246,.12)',
   };
   return (
     <div className="card relative overflow-hidden hover:border-[var(--border2)] transition-all">
-      <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl mb-3"
-           style={{ background: colorMap[color] }}>
-        {icon}
-      </div>
-      <div className="text-2xl font-bold tracking-tight mb-1" style={{ fontFamily: 'var(--font-inter)' }}>
+      <div className="text-2xl font-bold tracking-tight mb-1" style={{ color: 'var(--text)' }}>
         {value}
       </div>
       <div className="text-sm" style={{ color: 'var(--text2)' }}>{label}</div>
       {change && (
-        <div className={clsx('text-xs font-semibold mt-1.5 flex items-center gap-1', changeUp ? 'text-[var(--accent3)]' : 'text-[var(--accent5)]')}>
-          {changeUp ? '↑' : '↓'} {change}
+        <div className={clsx('text-xs font-semibold mt-1.5 flex items-center gap-1')} style={{ color: changeUp === true ? 'var(--success)' : changeUp === false ? 'var(--danger)' : 'var(--text3)' }}>
+          {changeUp === true ? '↑' : changeUp === false ? '↓' : ''} {change}
         </div>
       )}
-      <div className="absolute bottom-[-16px] right-[-12px] text-6xl opacity-[0.04] pointer-events-none select-none">
-        {icon}
-      </div>
     </div>
   );
 }
