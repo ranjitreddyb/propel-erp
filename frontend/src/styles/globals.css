@@ -3,52 +3,52 @@
 @tailwind utilities;
 
 /* ═══════════════════════════════════════════════════════════
-   Supratik ERP — Luxury Jewel Theme
-   Deep Teal + Champagne Gold — Premium Real Estate Design
+   Supratik ERP — Fresh Teal Blue Professional Theme
+   Medium Teal + Gold Accent — Elegant Real Estate Design
    ═══════════════════════════════════════════════════════════ */
 
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* ─── Core Colors — Deep Midnight Teal ────────────────── */
-  --bg:           #021114;
-  --bg-gradient:  linear-gradient(135deg, #021114 0%, #052830 50%, #021114 100%);
-  --surface:      #052830;
-  --surface2:     #073d4a;
-  --surface3:     #0a4f5e;
-  --glass:        rgba(5, 40, 48, 0.6);
+  /* ─── Core Colors — Fresh Teal Blue (Medium Tone) ─────── */
+  --bg:           #E8F4F6;
+  --bg-gradient:  linear-gradient(135deg, #E8F4F6 0%, #D5EAEF 50%, #E8F4F6 100%);
+  --surface:      #FFFFFF;
+  --surface2:     #F0F8FA;
+  --surface3:     #E0F0F3;
+  --glass:        rgba(255, 255, 255, 0.85);
   
-  /* ─── Primary — Rich Teal ─────────────────────────────── */
-  --primary:      #00A896;
-  --primary-light: #00C4A8;
-  --primary-dark:  #028C7D;
+  /* ─── Primary — Rich Teal Blue ────────────────────────── */
+  --primary:      #0891B2;
+  --primary-light: #22D3EE;
+  --primary-dark:  #0E7490;
   
-  /* ─── Secondary — Champagne Gold ──────────────────────── */
-  --secondary:    #D4AF37;
-  --secondary-light: #E8C547;
-  --secondary-dark:  #C5A028;
+  /* ─── Secondary — Warm Gold ───────────────────────────── */
+  --secondary:    #D97706;
+  --secondary-light: #F59E0B;
+  --secondary-dark:  #B45309;
   
   /* ─── Accent Colors ───────────────────────────────────── */
-  --accent:       #00A896;
-  --accent2:      #D4AF37;
-  --accent3:      #00C4A8;
-  --accent4:      #E8C547;
-  --accent5:      #E85C5C;
+  --accent:       #0891B2;
+  --accent2:      #D97706;
+  --accent3:      #22D3EE;
+  --accent4:      #F59E0B;
+  --accent5:      #EF4444;
   
   /* ─── Borders ─────────────────────────────────────────── */
-  --border:       rgba(255, 255, 255, 0.06);
-  --border2:      rgba(255, 255, 255, 0.12);
-  --border-gold:  rgba(212, 175, 55, 0.25);
+  --border:       rgba(8, 145, 178, 0.12);
+  --border2:      rgba(8, 145, 178, 0.2);
+  --border-gold:  rgba(217, 119, 6, 0.25);
   
   /* ─── Text Colors ─────────────────────────────────────── */
-  --text:         #FDFBF7;
-  --text2:        #C8D4D6;
-  --text3:        #8BA4A9;
+  --text:         #134E5E;
+  --text2:        #2D6A77;
+  --text3:        #5A9AAA;
   
   /* ─── Semantic Colors ─────────────────────────────────── */
-  --success:      #00C4A8;
-  --warning:      #E8C547;
-  --danger:       #E85C5C;
+  --success:      #10B981;
+  --warning:      #F59E0B;
+  --danger:       #EF4444;
   
   /* ─── Layout Variables ────────────────────────────────── */
   --sidebar-w:    260px;
@@ -62,9 +62,164 @@
   --font-body:    'Outfit', system-ui, sans-serif;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   THEME VARIATIONS — Admin Selectable Dual-Tone Palettes
+   ═══════════════════════════════════════════════════════════ */
+
+/* Theme: Teal + Gold (Default) */
+[data-theme="teal-gold"] {
+  --bg: #E8F4F6;
+  --bg-gradient: linear-gradient(135deg, #E8F4F6 0%, #D5EAEF 50%, #E8F4F6 100%);
+  --surface: #FFFFFF;
+  --surface2: #F0F8FA;
+  --surface3: #E0F0F3;
+  --glass: rgba(255, 255, 255, 0.85);
+  --primary: #0891B2;
+  --primary-light: #22D3EE;
+  --primary-dark: #0E7490;
+  --secondary: #D97706;
+  --secondary-light: #F59E0B;
+  --secondary-dark: #B45309;
+  --text: #134E5E;
+  --text2: #2D6A77;
+  --text3: #5A9AAA;
+  --border: rgba(8, 145, 178, 0.12);
+  --border2: rgba(8, 145, 178, 0.2);
+}
+
+/* Theme: Pink + Purple (Glamorous) */
+[data-theme="pink-purple"] {
+  --bg: #FDF2F8;
+  --bg-gradient: linear-gradient(135deg, #FDF2F8 0%, #FAE8F3 50%, #F5E6FA 100%);
+  --surface: #FFFFFF;
+  --surface2: #FEF7FB;
+  --surface3: #FCF0F7;
+  --glass: rgba(255, 255, 255, 0.88);
+  --primary: #DB2777;
+  --primary-light: #F472B6;
+  --primary-dark: #BE185D;
+  --secondary: #9333EA;
+  --secondary-light: #A855F7;
+  --secondary-dark: #7E22CE;
+  --text: #831843;
+  --text2: #9D174D;
+  --text3: #BE185D;
+  --border: rgba(219, 39, 119, 0.12);
+  --border2: rgba(219, 39, 119, 0.2);
+}
+
+/* Theme: Orange + Yellow (Energetic Sunset) */
+[data-theme="orange-yellow"] {
+  --bg: #FFFBEB;
+  --bg-gradient: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 50%, #FFF7ED 100%);
+  --surface: #FFFFFF;
+  --surface2: #FFFCF5;
+  --surface3: #FFF8E8;
+  --glass: rgba(255, 255, 255, 0.88);
+  --primary: #EA580C;
+  --primary-light: #FB923C;
+  --primary-dark: #C2410C;
+  --secondary: #EAB308;
+  --secondary-light: #FACC15;
+  --secondary-dark: #CA8A04;
+  --text: #7C2D12;
+  --text2: #9A3412;
+  --text3: #C2410C;
+  --border: rgba(234, 88, 12, 0.12);
+  --border2: rgba(234, 88, 12, 0.2);
+}
+
+/* Theme: Black + White (Classic Monochrome) */
+[data-theme="black-white"] {
+  --bg: #F8F9FA;
+  --bg-gradient: linear-gradient(135deg, #F8F9FA 0%, #F1F3F4 50%, #F8F9FA 100%);
+  --surface: #FFFFFF;
+  --surface2: #FAFBFC;
+  --surface3: #F4F5F6;
+  --glass: rgba(255, 255, 255, 0.9);
+  --primary: #18181B;
+  --primary-light: #3F3F46;
+  --primary-dark: #09090B;
+  --secondary: #71717A;
+  --secondary-light: #A1A1AA;
+  --secondary-dark: #52525B;
+  --text: #09090B;
+  --text2: #27272A;
+  --text3: #52525B;
+  --border: rgba(24, 24, 27, 0.1);
+  --border2: rgba(24, 24, 27, 0.15);
+}
+
+/* Theme: Lemon + Green (Fresh Nature) */
+[data-theme="lemon-green"] {
+  --bg: #F7FEE7;
+  --bg-gradient: linear-gradient(135deg, #F7FEE7 0%, #ECFCCB 50%, #FEFCE8 100%);
+  --surface: #FFFFFF;
+  --surface2: #FBFEF5;
+  --surface3: #F5FDE8;
+  --glass: rgba(255, 255, 255, 0.88);
+  --primary: #65A30D;
+  --primary-light: #84CC16;
+  --primary-dark: #4D7C0F;
+  --secondary: #FACC15;
+  --secondary-light: #FDE047;
+  --secondary-dark: #EAB308;
+  --text: #365314;
+  --text2: #3F6212;
+  --text3: #4D7C0F;
+  --border: rgba(101, 163, 13, 0.12);
+  --border2: rgba(101, 163, 13, 0.2);
+}
+
+/* Theme: Coral + Teal (Tropical Vibes) */
+[data-theme="coral-teal"] {
+  --bg: #FFF1F0;
+  --bg-gradient: linear-gradient(135deg, #FFF1F0 0%, #FFE4E1 50%, #E0F7FA 100%);
+  --surface: #FFFFFF;
+  --surface2: #FFF8F7;
+  --surface3: #FFEFEE;
+  --glass: rgba(255, 255, 255, 0.88);
+  --primary: #F97316;
+  --primary-light: #FB923C;
+  --primary-dark: #EA580C;
+  --secondary: #14B8A6;
+  --secondary-light: #2DD4BF;
+  --secondary-dark: #0D9488;
+  --text: #7C2D12;
+  --text2: #9A3412;
+  --text3: #C2410C;
+  --border: rgba(249, 115, 22, 0.12);
+  --border2: rgba(249, 115, 22, 0.2);
+}
+
+/* Theme: Royal Blue + Silver (Corporate Elegance) */
+[data-theme="blue-silver"] {
+  --bg: #EFF6FF;
+  --bg-gradient: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #F1F5F9 100%);
+  --surface: #FFFFFF;
+  --surface2: #F8FAFC;
+  --surface3: #F1F5F9;
+  --glass: rgba(255, 255, 255, 0.9);
+  --primary: #2563EB;
+  --primary-light: #3B82F6;
+  --primary-dark: #1D4ED8;
+  --secondary: #64748B;
+  --secondary-light: #94A3B8;
+  --secondary-dark: #475569;
+  --text: #1E3A5F;
+  --text2: #334155;
+  --text3: #475569;
+  --border: rgba(37, 99, 235, 0.12);
+  --border2: rgba(37, 99, 235, 0.2);
+}
+
 /* ─── Base Reset ─────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+html {
+  transition: all 0.3s ease;
 }
 
 body {
@@ -76,6 +231,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
+  transition: background 0.4s ease, color 0.3s ease;
 }
 
 /* ─── Scrollbar ──────────────────────────────────────────── */

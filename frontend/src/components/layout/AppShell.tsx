@@ -133,17 +133,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col h-screen overflow-hidden relative">
       {/* Decorative Background Orbs */}
-      <div className="decorative-orb orb-teal w-96 h-96 -top-48 -right-48 fixed" />
-      <div className="decorative-orb orb-gold w-64 h-64 top-1/2 -left-32 fixed" />
-      <div className="decorative-orb orb-teal w-48 h-48 bottom-20 right-1/4 fixed" />
+      <div className="decorative-orb w-96 h-96 -top-48 -right-48 fixed" style={{ background: 'var(--primary)', opacity: 0.06 }} />
+      <div className="decorative-orb w-64 h-64 top-1/2 -left-32 fixed" style={{ background: 'var(--secondary)', opacity: 0.06 }} />
+      <div className="decorative-orb w-48 h-48 bottom-20 right-1/4 fixed" style={{ background: 'var(--primary)', opacity: 0.04 }} />
 
       {/* ─── TOP HEADER ──────────────────────────────────── */}
       <header
         className="flex items-center gap-4 px-6 flex-shrink-0 backdrop-blur-2xl z-50 relative"
         style={{ 
           height: 'var(--header-h)', 
-          background: 'rgba(2, 17, 20, 0.85)', 
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          background: 'var(--glass)', 
+          borderBottom: '1px solid var(--border)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
         }}
       >
         {/* Mobile menu toggle */}
@@ -161,8 +162,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div
             className="w-11 h-11 rounded-xl flex items-center justify-center relative"
             style={{ 
-              background: 'linear-gradient(135deg, #00A896, #028C7D)',
-              boxShadow: '0 0 20px rgba(0,168,150,0.4)',
+              background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))',
+              boxShadow: '0 4px 15px rgba(8,145,178,0.25)',
             }}
           >
             <Building2 size={24} className="text-white" />
@@ -170,7 +171,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div>
             <span 
               className="text-xl font-semibold tracking-tight block"
-              style={{ fontFamily: 'var(--font-heading)', color: '#D4AF37' }}
+              style={{ fontFamily: 'var(--font-heading)', color: 'var(--primary-dark)' }}
             >
               {appName}
             </span>
@@ -182,14 +183,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Company Switcher */}
         <button
-          className="hidden md:flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all hover:border-[#00A896]"
+          className="hidden md:flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all hover:border-[var(--primary)]"
           style={{ 
-            background: 'rgba(0, 168, 150, 0.1)', 
-            border: '1px solid rgba(0, 168, 150, 0.2)',
+            background: 'var(--surface)', 
+            border: '1px solid var(--border)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
           }}
           data-testid="company-switcher"
         >
-          <Sparkles size={16} style={{ color: '#00A896' }} />
+          <Sparkles size={16} style={{ color: 'var(--primary)' }} />
           <span className="max-w-[180px] truncate font-medium" style={{ color: 'var(--text)' }}>
             {displayCompany?.name || 'Select Company'}
           </span>
@@ -198,10 +200,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Search */}
         <div
-          className="flex items-center gap-3 flex-1 max-w-lg px-4 py-3 rounded-xl transition-all focus-within:border-[#00A896]"
+          className="flex items-center gap-3 flex-1 max-w-lg px-4 py-3 rounded-xl transition-all focus-within:border-[var(--primary)] focus-within:shadow-lg"
           style={{ 
-            background: 'rgba(5, 40, 48, 0.6)', 
-            border: '1px solid rgba(255,255,255,0.06)',
+            background: 'var(--surface)', 
+            border: '1px solid var(--border)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
           }}
         >
           <Search size={18} style={{ color: 'var(--text3)' }} />
@@ -214,7 +217,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           />
           <kbd 
             className="hidden sm:block text-[10px] px-2 py-1 rounded-md font-mono"
-            style={{ background: 'rgba(0,0,0,0.3)', color: 'var(--text3)' }}
+            style={{ background: 'var(--surface2)', color: 'var(--text3)' }}
           >
             ⌘K
           </kbd>
@@ -224,15 +227,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="ml-auto flex items-center gap-3">
           <Link href="/dashboard/notifications">
             <button
-              className="relative w-11 h-11 rounded-xl flex items-center justify-center transition-all hover:bg-[rgba(0,168,150,0.1)]"
-              style={{ background: 'rgba(5, 40, 48, 0.6)', border: '1px solid rgba(255,255,255,0.06)' }}
+              className="relative w-11 h-11 rounded-xl flex items-center justify-center transition-all hover:bg-[var(--surface2)]"
+              style={{ background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
               data-testid="notifications-btn"
             >
               <Bell size={20} style={{ color: 'var(--text2)' }} />
               {unreadCount > 0 && (
                 <span
-                  className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
-                  style={{ background: '#D4AF37', color: '#021114' }}
+                  className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
+                  style={{ background: 'var(--danger)' }}
                 >
                   {unreadCount}
                 </span>
@@ -242,21 +245,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           <Link href="/dashboard/users/settings">
             <button
-              className="w-11 h-11 rounded-xl flex items-center justify-center transition-all hover:bg-[rgba(0,168,150,0.1)]"
-              style={{ background: 'rgba(5, 40, 48, 0.6)', border: '1px solid rgba(255,255,255,0.06)' }}
+              className="w-11 h-11 rounded-xl flex items-center justify-center transition-all hover:bg-[var(--surface2)]"
+              style={{ background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
               data-testid="settings-btn"
             >
               <Settings size={20} style={{ color: 'var(--text2)' }} />
             </button>
           </Link>
 
-          <div className="flex items-center gap-3 pl-4 ml-2 border-l" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+          <div className="flex items-center gap-3 pl-4 ml-2 border-l" style={{ borderColor: 'var(--border)' }}>
             <button
-              className="w-11 h-11 rounded-xl flex items-center justify-center text-sm font-semibold"
+              className="w-11 h-11 rounded-xl flex items-center justify-center text-sm font-semibold text-white"
               style={{ 
-                background: 'linear-gradient(135deg, #D4AF37, #C5A028)',
-                color: '#021114',
-                boxShadow: '0 0 20px rgba(212,175,55,0.3)',
+                background: 'linear-gradient(135deg, var(--secondary), var(--secondary-dark))',
+                boxShadow: '0 4px 12px rgba(217,119,6,0.25)',
               }}
               title={displayName}
               data-testid="user-avatar"
@@ -266,8 +268,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm transition-all hover:bg-[rgba(232,92,92,0.1)] hover:border-[#E85C5C]"
-              style={{ border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text2)' }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm transition-all hover:bg-red-50 hover:border-red-300"
+              style={{ border: '1px solid var(--border)', color: 'var(--text2)', background: 'var(--surface)' }}
               data-testid="logout-btn"
             >
               <LogOut size={16} />
@@ -287,14 +289,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             sidebarCollapsed ? 'w-[72px]' : 'w-[var(--sidebar-w)]'
           )}
           style={{
-            background: 'rgba(2, 17, 20, 0.9)',
-            borderRight: '1px solid rgba(255,255,255,0.06)',
+            background: 'var(--glass)',
+            borderRight: '1px solid var(--border)',
             top: 'var(--header-h)',
+            boxShadow: '4px 0 20px rgba(0,0,0,0.03)',
           }}
         >
           {/* Collapse toggle */}
           <button
-            className="hidden lg:flex items-center justify-end p-4 transition-colors hover:text-[#00A896]"
+            className="hidden lg:flex items-center justify-end p-4 transition-colors hover:text-[var(--primary)]"
             style={{ color: 'var(--text3)' }}
             onClick={toggleSidebar}
             data-testid="sidebar-toggle"
@@ -310,7 +313,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {!sidebarCollapsed && (
                 <div 
                   className="text-[10px] font-semibold uppercase tracking-[0.2em] px-3 mb-2 pt-4"
-                  style={{ color: '#D4AF37' }}
+                  style={{ color: 'var(--secondary)' }}
                 >
                   {section.label}
                 </div>
@@ -324,15 +327,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       className={clsx(
                         'flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all text-sm font-medium mb-1 relative',
                         isActive
-                          ? 'text-[#00A896] bg-[rgba(0,168,150,0.15)]'
-                          : 'text-[var(--text3)] hover:text-[var(--text)] hover:bg-[rgba(0,168,150,0.08)]'
+                          ? 'text-[var(--primary)] bg-[var(--surface)]'
+                          : 'text-[var(--text3)] hover:text-[var(--text)] hover:bg-[var(--surface2)]'
                       )}
+                      style={isActive ? { boxShadow: '0 2px 8px rgba(0,0,0,0.06)' } : {}}
                       data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                     >
                       {isActive && (
                         <span
                           className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[60%] rounded-r-full"
-                          style={{ background: '#00A896' }}
+                          style={{ background: 'var(--primary)' }}
                         />
                       )}
                       <Icon size={18} className="flex-shrink-0" />
@@ -341,26 +345,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                           <span className="flex-1 truncate">{item.label}</span>
                           {(item as { badge?: number | string }).badge === 'unread' && unreadCount > 0 && (
                             <span 
-                              className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                              style={{ background: '#E85C5C', color: 'white' }}
+                              className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white"
+                              style={{ background: 'var(--danger)' }}
                             >
                               {unreadCount}
                             </span>
                           )}
                           {typeof (item as { badge?: number | string }).badge === 'number' && (
                             <span 
-                              className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                              style={{ background: '#D4AF37', color: '#021114' }}
+                              className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white"
+                              style={{ background: 'var(--secondary)' }}
                             >
                               {(item as { badge?: number | string }).badge as number}
                             </span>
                           )}
                           {(item as { isAI?: boolean }).isAI && (
                             <span
-                              className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                              className="text-[9px] font-bold px-1.5 py-0.5 rounded text-white"
                               style={{ 
-                                background: 'linear-gradient(135deg, #00A896, #D4AF37)',
-                                color: '#021114',
+                                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
                               }}
                             >
                               AI

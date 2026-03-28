@@ -122,8 +122,8 @@ export function SahayakChatbot() {
           onClick={() => setIsOpen(true)}
           className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110"
           style={{
-            background: 'linear-gradient(135deg, #203A2B 0%, #36684B 100%)',
-            boxShadow: '0 8px 32px rgba(32,58,43,0.4)',
+            background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)',
+            boxShadow: '0 8px 32px rgba(8,145,178,0.35)',
           }}
           data-testid="sahayak-chat-button"
         >
@@ -140,9 +140,9 @@ export function SahayakChatbot() {
             right: '24px',
             width: isMinimized ? '320px' : '400px',
             height: isMinimized ? '70px' : '540px',
-            background: '#FFFFFF',
-            border: '1px solid #E8E2D9',
-            boxShadow: '0 20px 60px rgba(32,58,43,0.2), 0 8px 24px rgba(0,0,0,0.15)',
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.1)',
           }}
           data-testid="sahayak-chat-window"
         >
@@ -151,9 +151,9 @@ export function SahayakChatbot() {
             onClick={closeChat}
             className="absolute -top-3 -right-3 w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 z-[10000]"
             style={{
-              background: '#DC2626',
+              background: 'var(--danger)',
               border: '3px solid white',
-              boxShadow: '0 4px 12px rgba(220,38,38,0.4)',
+              boxShadow: '0 4px 12px rgba(239,68,68,0.4)',
             }}
             data-testid="sahayak-close-btn"
           >
@@ -165,20 +165,20 @@ export function SahayakChatbot() {
             className="flex items-center justify-between px-4"
             style={{
               height: '70px',
-              background: 'linear-gradient(135deg, #203A2B 0%, #2A4C38 100%)',
+              background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)',
               borderRadius: '16px 16px 0 0',
             }}
           >
             <div className="flex items-center gap-3">
               <div
                 className="w-11 h-11 rounded-xl flex items-center justify-center"
-                style={{ background: 'rgba(255,255,255,0.15)' }}
+                style={{ background: 'rgba(255,255,255,0.2)' }}
               >
                 <Sparkles size={24} className="text-white" />
               </div>
               <div>
                 <h3 className="font-semibold text-white text-lg">Sahayak</h3>
-                <p className="text-xs text-green-200">AI Assistant</p>
+                <p className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>AI Assistant</p>
               </div>
             </div>
             
@@ -199,7 +199,7 @@ export function SahayakChatbot() {
               {/* Messages */}
               <div
                 className="overflow-y-auto p-4 space-y-4"
-                style={{ height: 'calc(100% - 190px)', background: '#FDFBF7' }}
+                style={{ height: 'calc(100% - 190px)', background: 'var(--surface2)' }}
               >
                 {messages.map((message) => (
                   <div
@@ -212,8 +212,8 @@ export function SahayakChatbot() {
                       }`}
                       style={
                         message.role === 'user'
-                          ? { background: '#203A2B', color: '#fff' }
-                          : { background: '#FFFFFF', border: '1px solid #E8E2D9', color: '#1A1C1A' }
+                          ? { background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))', color: '#fff' }
+                          : { background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }
                       }
                       dangerouslySetInnerHTML={{ __html: formatContent(message.content) }}
                     />
@@ -223,10 +223,10 @@ export function SahayakChatbot() {
                   <div className="flex justify-start">
                     <div
                       className="px-4 py-3 rounded-2xl rounded-bl-sm flex items-center gap-2"
-                      style={{ background: '#FFFFFF', border: '1px solid #E8E2D9' }}
+                      style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
                     >
-                      <Loader2 size={16} className="animate-spin" style={{ color: '#203A2B' }} />
-                      <span className="text-sm" style={{ color: '#7A756C' }}>Thinking…</span>
+                      <Loader2 size={16} className="animate-spin" style={{ color: 'var(--primary)' }} />
+                      <span className="text-sm" style={{ color: 'var(--text3)' }}>Thinking…</span>
                     </div>
                   </div>
                 )}
@@ -234,14 +234,14 @@ export function SahayakChatbot() {
               </div>
 
               {/* Quick Prompts */}
-              <div className="px-4 py-2 flex flex-wrap gap-2" style={{ background: '#FFFFFF', borderTop: '1px solid #E8E2D9' }}>
+              <div className="px-4 py-2 flex flex-wrap gap-2" style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)' }}>
                 {QUICK_PROMPTS.map((prompt) => (
                   <button
                     key={prompt}
                     onClick={() => sendMessage(prompt)}
                     disabled={isLoading}
-                    className="text-xs px-3 py-1.5 rounded-full border transition-all hover:bg-[#F3EFEA] disabled:opacity-50"
-                    style={{ background: '#FDFBF7', borderColor: '#E8E2D9', color: '#203A2B' }}
+                    className="text-xs px-3 py-1.5 rounded-full border transition-all hover:shadow-sm disabled:opacity-50"
+                    style={{ background: 'var(--surface2)', borderColor: 'var(--border)', color: 'var(--primary)' }}
                   >
                     {prompt}
                   </button>
@@ -249,7 +249,7 @@ export function SahayakChatbot() {
               </div>
 
               {/* Input */}
-              <div className="p-4" style={{ background: '#FFFFFF', borderTop: '1px solid #E8E2D9', borderRadius: '0 0 16px 16px' }}>
+              <div className="p-4" style={{ background: 'var(--surface)', borderTop: '1px solid var(--border)', borderRadius: '0 0 16px 16px' }}>
                 <div className="flex gap-3">
                   <input
                     ref={inputRef}
@@ -259,11 +259,11 @@ export function SahayakChatbot() {
                     onKeyDown={handleKeyDown}
                     placeholder="Ask Sahayak anything…"
                     disabled={isLoading}
-                    className="flex-1 px-4 py-3 rounded-xl text-sm outline-none transition-all"
+                    className="flex-1 px-4 py-3 rounded-xl text-sm outline-none transition-all focus:border-[var(--primary)]"
                     style={{
-                      background: '#FDFBF7',
-                      border: '1px solid #E8E2D9',
-                      color: '#1A1C1A',
+                      background: 'var(--surface2)',
+                      border: '1px solid var(--border)',
+                      color: 'var(--text)',
                     }}
                     data-testid="sahayak-input"
                   />
@@ -272,7 +272,7 @@ export function SahayakChatbot() {
                     disabled={!input.trim() || isLoading}
                     className="w-12 h-12 rounded-xl flex items-center justify-center transition-all disabled:opacity-40"
                     style={{
-                      background: input.trim() ? '#203A2B' : '#E8E2D9',
+                      background: input.trim() ? 'linear-gradient(135deg, var(--primary), var(--primary-dark))' : 'var(--surface3)',
                     }}
                     data-testid="sahayak-send-btn"
                   >

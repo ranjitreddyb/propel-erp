@@ -177,8 +177,8 @@ export default function LoginPage() {
     <div
       className="min-h-screen flex items-center justify-center p-4"
       style={{
-        background: '#FDFBF7',
-        backgroundImage: `radial-gradient(ellipse 80% 60% at 50% 0%, rgba(32,58,43,0.08) 0%, transparent 60%)`,
+        background: 'var(--bg)',
+        backgroundImage: `radial-gradient(ellipse 80% 60% at 50% 0%, rgba(8,145,178,0.08) 0%, transparent 60%)`,
       }}
     >
       <div className="w-full max-w-md animate-slide-up">
@@ -187,19 +187,19 @@ export default function LoginPage() {
           <div
             className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
             style={{
-              background: 'linear-gradient(135deg, #203A2B, #2A4C38)',
-              boxShadow: '0 8px 32px rgba(32,58,43,0.3)',
+              background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))',
+              boxShadow: '0 8px 32px rgba(8,145,178,0.3)',
             }}
           >
             <Building2 size={32} className="text-white" />
           </div>
           <h1 
             className="text-3xl font-semibold tracking-tight" 
-            style={{ fontFamily: 'Cormorant Garamond, serif', color: '#203A2B' }}
+            style={{ fontFamily: 'Cormorant Garamond, serif', color: 'var(--primary-dark)' }}
           >
             Supratik
           </h1>
-          <p className="text-sm mt-1" style={{ color: '#7A756C' }}>
+          <p className="text-sm mt-1" style={{ color: 'var(--text3)' }}>
             Property Management System
           </p>
         </div>
@@ -207,11 +207,11 @@ export default function LoginPage() {
         {/* Card */}
         <div
           className="rounded-2xl p-8 border"
-          style={{ background: '#FFFFFF', borderColor: '#E8E2D9', boxShadow: '0 4px 24px rgba(32,58,43,0.06)' }}
+          style={{ background: 'var(--surface)', borderColor: 'var(--border)', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}
         >
           {step === 'phone' ? (
             <>
-              <h2 className="text-lg font-bold mb-2">Sign in with Mobile</h2>
+              <h2 className="text-lg font-bold mb-2" style={{ color: 'var(--text)' }}>Sign in with Mobile</h2>
               <p className="text-sm mb-6" style={{ color: 'var(--text2)' }}>
                 Enter your registered mobile number to receive OTP
               </p>
@@ -255,8 +255,8 @@ export default function LoginPage() {
                   disabled={loading || phone.length !== 10}
                   className="w-full py-2.5 rounded-lg font-semibold text-white transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   style={{
-                    background: 'linear-gradient(135deg, var(--accent), var(--accent2))',
-                    boxShadow: '0 4px 20px rgba(79,142,247,0.35)',
+                    background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))',
+                    boxShadow: '0 4px 20px rgba(8,145,178,0.3)',
                   }}
                   data-testid="send-otp-btn"
                 >
@@ -274,12 +274,12 @@ export default function LoginPage() {
               <div className="flex items-center gap-2 mb-2">
                 <button
                   onClick={handleBack}
-                  className="p-1 rounded hover:bg-white/10 transition"
+                  className="p-1 rounded hover:bg-[var(--surface2)] transition"
                   style={{ color: 'var(--text2)' }}
                 >
                   <ArrowRight size={16} className="rotate-180" />
                 </button>
-                <h2 className="text-lg font-bold">Enter OTP</h2>
+                <h2 className="text-lg font-bold" style={{ color: 'var(--text)' }}>Enter OTP</h2>
               </div>
               <p className="text-sm mb-6" style={{ color: 'var(--text2)' }}>
                 Enter the 6-digit code sent to{' '}
@@ -298,10 +298,10 @@ export default function LoginPage() {
                     value={digit}
                     onChange={(e) => handleOtpChange(i, e.target.value)}
                     onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                    className="w-11 h-12 text-center text-xl font-bold rounded-lg border-2 focus:border-blue-500 focus:outline-none transition"
+                    className="w-11 h-12 text-center text-xl font-bold rounded-lg border-2 focus:outline-none transition"
                     style={{
-                      background: 'var(--bg)',
-                      borderColor: digit ? 'var(--accent)' : 'var(--border)',
+                      background: 'var(--surface2)',
+                      borderColor: digit ? 'var(--primary)' : 'var(--border)',
                       color: 'var(--text)',
                     }}
                     maxLength={1}
@@ -314,7 +314,7 @@ export default function LoginPage() {
               {debugOtp && (
                 <div
                   className="text-center text-xs mb-4 py-2 px-3 rounded-lg"
-                  style={{ background: 'rgba(79,142,247,0.1)', color: 'var(--accent)' }}
+                  style={{ background: 'rgba(8,145,178,0.1)', color: 'var(--primary)' }}
                 >
                   <Shield size={12} className="inline mr-1" />
                   Demo OTP: <span className="font-mono font-bold">{debugOtp}</span>
@@ -326,8 +326,8 @@ export default function LoginPage() {
                 disabled={loading || otp.some((d) => !d)}
                 className="w-full py-2.5 rounded-lg font-semibold text-white transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 style={{
-                  background: 'linear-gradient(135deg, var(--accent), var(--accent2))',
-                  boxShadow: '0 4px 20px rgba(79,142,247,0.35)',
+                  background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))',
+                  boxShadow: '0 4px 20px rgba(8,145,178,0.3)',
                 }}
                 data-testid="verify-otp-btn"
               >
@@ -344,7 +344,7 @@ export default function LoginPage() {
                   onClick={handleResendOtp}
                   disabled={resendTimer > 0 || loading}
                   className="text-sm font-medium transition flex items-center justify-center gap-1 mx-auto disabled:opacity-50"
-                  style={{ color: resendTimer > 0 ? 'var(--text3)' : 'var(--accent)' }}
+                  style={{ color: resendTimer > 0 ? 'var(--text3)' : 'var(--primary)' }}
                   data-testid="resend-otp-btn"
                 >
                   <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />

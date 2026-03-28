@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAppStore } from '@/store/useAppStore';
+import { ThemeInitializer } from './ThemeInitializer';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,6 +56,7 @@ function SocketProvider({ children }: { children: React.ReactNode }) {
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeInitializer />
       <SocketProvider>
         {children}
         <Toaster
@@ -62,14 +64,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
           toastOptions={{
             duration: 4000,
             style: {
-              background: '#1d2130',
-              color: '#f0f2f8',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '10px',
+              background: 'var(--surface)',
+              color: 'var(--text)',
+              border: '1px solid var(--border)',
+              borderRadius: '12px',
               fontSize: '14px',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
             },
-            success: { iconTheme: { primary: '#00d4aa', secondary: '#fff' } },
-            error:   { iconTheme: { primary: '#f74f7a', secondary: '#fff' } },
+            success: { iconTheme: { primary: 'var(--success)', secondary: '#fff' } },
+            error:   { iconTheme: { primary: 'var(--danger)', secondary: '#fff' } },
           }}
         />
       </SocketProvider>

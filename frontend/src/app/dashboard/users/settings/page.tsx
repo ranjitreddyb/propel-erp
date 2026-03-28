@@ -2,20 +2,68 @@
 
 import { useState, useEffect } from 'react';
 import { Card, PageHeader } from '@/components/ui';
-import { Settings, Building2, Bell, Shield, Save, Check, Camera } from 'lucide-react';
+import { Settings, Building2, Bell, Shield, Save, Check, Camera, Palette } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+
+const THEME_OPTIONS = [
+  { 
+    id: 'teal-gold', 
+    name: 'Teal + Gold', 
+    colors: ['#0891B2', '#D97706'],
+    description: 'Professional & Elegant'
+  },
+  { 
+    id: 'pink-purple', 
+    name: 'Pink + Purple', 
+    colors: ['#DB2777', '#9333EA'],
+    description: 'Glamorous & Bold'
+  },
+  { 
+    id: 'orange-yellow', 
+    name: 'Orange + Yellow', 
+    colors: ['#EA580C', '#EAB308'],
+    description: 'Energetic Sunset'
+  },
+  { 
+    id: 'black-white', 
+    name: 'Black + White', 
+    colors: ['#18181B', '#71717A'],
+    description: 'Classic Monochrome'
+  },
+  { 
+    id: 'lemon-green', 
+    name: 'Lemon + Green', 
+    colors: ['#65A30D', '#FACC15'],
+    description: 'Fresh Nature'
+  },
+  { 
+    id: 'coral-teal', 
+    name: 'Coral + Teal', 
+    colors: ['#F97316', '#14B8A6'],
+    description: 'Tropical Vibes'
+  },
+  { 
+    id: 'blue-silver', 
+    name: 'Blue + Silver', 
+    colors: ['#2563EB', '#64748B'],
+    description: 'Corporate Elegance'
+  },
+];
 
 export default function SettingsPage() {
   const [appName, setAppName] = useState('Supratik');
   const [companyName, setCompanyName] = useState('Supratik Properties');
+  const [selectedTheme, setSelectedTheme] = useState('teal-gold');
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     const storedAppName = localStorage.getItem('app_name');
     const storedCompany = localStorage.getItem('propel_company');
+    const storedTheme = localStorage.getItem('app_theme');
     
     if (storedAppName) setAppName(storedAppName);
+    if (storedTheme) setSelectedTheme(storedTheme);
     if (storedCompany) {
       try {
         const company = JSON.parse(storedCompany);
@@ -24,8 +72,17 @@ export default function SettingsPage() {
     }
   }, []);
 
+  const handleThemeChange = (themeId: string) => {
+    setSelectedTheme(themeId);
+    document.documentElement.setAttribute('data-theme', themeId);
+    localStorage.setItem('app_theme', themeId);
+    toast.success(`Theme changed to ${THEME_OPTIONS.find(t => t.id === themeId)?.name}`);
+  };
+
   const handleSave = () => {
     localStorage.setItem('app_name', appName);
+    localStorage.setItem('app_theme', selectedTheme);
+    document.documentElement.setAttribute('data-theme', selectedTheme);
     
     const storedCompany = localStorage.getItem('propel_company');
     if (storedCompany) {
@@ -49,14 +106,70 @@ export default function SettingsPage() {
       />
 
       <div className="space-y-6">
+        {/* Theme Selector Card */}
+        <Card>
+          <div className="flex items-center gap-3 mb-6">
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))' }}
+            >
+              <Palette size={20} className="text-white" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-lg" style={{ color: 'var(--text)' }}>Theme & Colors</h2>
+              <p className="text-sm" style={{ color: 'var(--text3)' }}>Choose your preferred dual-tone color scheme</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {THEME_OPTIONS.map((theme) => (
+              <button
+                key={theme.id}
+                onClick={() => handleThemeChange(theme.id)}
+                className={`relative p-4 rounded-xl border-2 transition-all duration-300 text-left group hover:scale-[1.02] ${
+                  selectedTheme === theme.id 
+                    ? 'border-[var(--primary)] shadow-lg' 
+                    : 'border-transparent hover:border-[var(--border2)]'
+                }`}
+                style={{ 
+                  background: selectedTheme === theme.id ? 'var(--surface)' : 'var(--surface2)',
+                  boxShadow: selectedTheme === theme.id ? '0 4px 20px rgba(0,0,0,0.08)' : 'none'
+                }}
+                data-testid={`theme-${theme.id}`}
+              >
+                {selectedTheme === theme.id && (
+                  <div 
+                    className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center"
+                    style={{ background: 'var(--primary)' }}
+                  >
+                    <Check size={12} className="text-white" />
+                  </div>
+                )}
+                <div className="flex gap-1.5 mb-3">
+                  <div 
+                    className="w-8 h-8 rounded-lg shadow-sm"
+                    style={{ background: theme.colors[0] }}
+                  />
+                  <div 
+                    className="w-8 h-8 rounded-lg shadow-sm"
+                    style={{ background: theme.colors[1] }}
+                  />
+                </div>
+                <div className="font-medium text-sm" style={{ color: 'var(--text)' }}>{theme.name}</div>
+                <div className="text-xs mt-0.5" style={{ color: 'var(--text3)' }}>{theme.description}</div>
+              </button>
+            ))}
+          </div>
+        </Card>
+
         {/* Branding Settings */}
         <Card>
           <div className="flex items-center gap-3 mb-6">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: 'rgba(32,58,43,0.1)' }}
+              style={{ background: 'rgba(8,145,178,0.1)' }}
             >
-              <Building2 size={20} style={{ color: '#203A2B' }} />
+              <Building2 size={20} style={{ color: 'var(--primary)' }} />
             </div>
             <div>
               <h2 className="font-semibold text-lg" style={{ color: 'var(--text)' }}>Branding & Identity</h2>
@@ -101,19 +214,19 @@ export default function SettingsPage() {
 
             <div
               className="p-4 rounded-xl border"
-              style={{ background: 'rgba(32,58,43,0.03)', borderColor: 'rgba(32,58,43,0.1)' }}
+              style={{ background: 'var(--surface2)', borderColor: 'var(--border)' }}
             >
               <div className="text-xs font-medium mb-2" style={{ color: 'var(--text3)' }}>Preview</div>
               <div className="flex items-center gap-3">
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #203A2B, #2A4C38)' }}
+                  style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))' }}
                 >
                   <Building2 size={20} className="text-white" />
                 </div>
                 <span 
                   className="text-xl font-semibold"
-                  style={{ fontFamily: 'Cormorant Garamond, serif', color: '#203A2B' }}
+                  style={{ fontFamily: 'Cormorant Garamond, serif', color: 'var(--primary-dark)' }}
                 >
                   {appName || 'Your Brand'}
                 </span>
@@ -128,9 +241,9 @@ export default function SettingsPage() {
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: 'rgba(207,161,90,0.1)' }}
+                style={{ background: 'rgba(217,119,6,0.1)' }}
               >
-                <Camera size={20} style={{ color: '#CFA15A' }} />
+                <Camera size={20} style={{ color: 'var(--secondary)' }} />
               </div>
               <div>
                 <h2 className="font-semibold text-lg" style={{ color: 'var(--text)' }}>CCTV & Security</h2>
@@ -139,8 +252,8 @@ export default function SettingsPage() {
             </div>
             <Link href="/dashboard/security">
               <button
-                className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
-                style={{ background: 'rgba(207,161,90,0.1)', color: '#CFA15A', border: '1px solid rgba(207,161,90,0.2)' }}
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all hover:shadow-md"
+                style={{ background: 'rgba(217,119,6,0.1)', color: 'var(--secondary)', border: '1px solid rgba(217,119,6,0.2)' }}
               >
                 Configure →
               </button>
@@ -153,9 +266,9 @@ export default function SettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: 'rgba(54,104,75,0.1)' }}
+              style={{ background: 'rgba(8,145,178,0.1)' }}
             >
-              <Bell size={20} style={{ color: '#36684B' }} />
+              <Bell size={20} style={{ color: 'var(--primary)' }} />
             </div>
             <div>
               <h2 className="font-semibold text-lg" style={{ color: 'var(--text)' }}>Notifications</h2>
@@ -174,7 +287,7 @@ export default function SettingsPage() {
                   <div className="font-medium text-sm" style={{ color: 'var(--text)' }}>{item.label}</div>
                   <div className="text-xs" style={{ color: 'var(--text3)' }}>{item.desc}</div>
                 </div>
-                <input type="checkbox" defaultChecked={item.checked} className="w-5 h-5 rounded" style={{ accentColor: '#203A2B' }} />
+                <input type="checkbox" defaultChecked={item.checked} className="w-5 h-5 rounded accent-[var(--primary)]" />
               </label>
             ))}
           </div>
@@ -185,9 +298,9 @@ export default function SettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: 'rgba(158,60,60,0.1)' }}
+              style={{ background: 'rgba(239,68,68,0.1)' }}
             >
-              <Shield size={20} style={{ color: '#9E3C3C' }} />
+              <Shield size={20} style={{ color: 'var(--danger)' }} />
             </div>
             <div>
               <h2 className="font-semibold text-lg" style={{ color: 'var(--text)' }}>Account Security</h2>
@@ -201,14 +314,14 @@ export default function SettingsPage() {
                 <div className="font-medium text-sm" style={{ color: 'var(--text)' }}>Two-factor authentication</div>
                 <div className="text-xs" style={{ color: 'var(--text3)' }}>Add extra security to your account</div>
               </div>
-              <input type="checkbox" className="w-5 h-5 rounded" style={{ accentColor: '#203A2B' }} />
+              <input type="checkbox" className="w-5 h-5 rounded accent-[var(--primary)]" />
             </label>
             <label className="flex items-center justify-between p-3 rounded-lg cursor-pointer hover:bg-[var(--surface2)]">
               <div>
                 <div className="font-medium text-sm" style={{ color: 'var(--text)' }}>Session timeout</div>
                 <div className="text-xs" style={{ color: 'var(--text3)' }}>Auto-logout after 30 minutes of inactivity</div>
               </div>
-              <input type="checkbox" defaultChecked className="w-5 h-5 rounded" style={{ accentColor: '#203A2B' }} />
+              <input type="checkbox" defaultChecked className="w-5 h-5 rounded accent-[var(--primary)]" />
             </label>
           </div>
         </Card>
@@ -217,10 +330,10 @@ export default function SettingsPage() {
         <div className="flex justify-end">
           <button
             onClick={handleSave}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-white transition-all hover:shadow-lg"
+            className="flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-white transition-all hover:shadow-lg hover:scale-[1.02]"
             style={{ 
-              background: saved ? '#36684B' : '#203A2B',
-              boxShadow: '0 4px 12px rgba(32,58,43,0.2)'
+              background: saved ? 'var(--success)' : 'linear-gradient(135deg, var(--primary), var(--primary-dark))',
+              boxShadow: '0 4px 15px rgba(8,145,178,0.25)'
             }}
             data-testid="save-settings-btn"
           >
