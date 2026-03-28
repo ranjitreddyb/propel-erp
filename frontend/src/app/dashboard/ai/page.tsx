@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { aiApi } from '@/services/api';
 import { Card, PageHeader, Button, Grid, KpiCard, Loading } from '@/components/ui';
@@ -11,32 +12,39 @@ type Message = { role: 'user' | 'assistant'; content: string };
 
 const AI_MODULES = [
   {
+    id: 'revenue',
     icon: <TrendingUp size={20} />, color: 'rgba(32,58,43,.1)', border: 'rgba(32,58,43,.2)',
     title: 'Predictive Revenue Engine',
     desc: 'ML models forecast rental income 12 months ahead with 94% accuracy using historical lease and market data.',
     metric: '₹5.1 Crore', metricLabel: 'Q1 FY27 Forecast', metricColor: '#36684B',
     metricSub: '↑ 21% YoY · Confidence 94%',
     action: 'View Projections',
+    actionHref: '/dashboard/ai/revenue',
   },
   {
+    id: 'rental-index',
     icon: <MapPin size={20} />, color: 'rgba(8,145,178,.1)', border: 'rgba(8,145,178,.2)',
     title: 'Rental Index AI',
     desc: 'Aggregates rental data from nearby properties, micro-markets, and govt indices to provide real-time market benchmarking.',
     rentalIndex: [
-      { area: 'Whitefield (Office)', rate: '₹85/sqft', trend: '↑ 12%', benchmark: 'Above Market' },
-      { area: 'Whitefield (Retail)', rate: '₹120/sqft', trend: '↑ 8%', benchmark: 'At Market' },
-      { area: 'Marathahalli (Residential)', rate: '₹42/sqft', trend: '↑ 5%', benchmark: 'Below Market' },
+      { area: 'Bhubaneswar (Patia - IT)', rate: '₹48/sqft', trend: '↑ 14%', benchmark: 'Above Market' },
+      { area: 'Cuttack (Badambadi - Retail)', rate: '₹65/sqft', trend: '↑ 9%', benchmark: 'At Market' },
+      { area: 'Bhubaneswar (Saheed Nagar)', rate: '₹38/sqft', trend: '↑ 6%', benchmark: 'Below Market' },
     ],
     action: 'View Full Index Report',
+    actionHref: '/dashboard/ai/rental-index',
   },
   {
+    id: 'churn',
     icon: <AlertTriangle size={20} />, color: 'rgba(158,60,60,.1)', border: 'rgba(158,60,60,.2)',
     title: 'Tenant Churn Risk Predictor',
     desc: 'Analyses payment patterns, lease age, and communication gaps to flag attrition risk 90 days ahead.',
     risks: [{ name: 'Unit 4A — TechStar', pct: 78, level: 'HIGH' }, { name: 'Unit 7B — Gourmet Co', pct: 52, level: 'MED' }, { name: 'Unit 12C — MegaCorp', pct: 12, level: 'LOW' }],
     action: 'Generate Retention Plan',
+    actionHref: '/dashboard/ai/churn',
   },
   {
+    id: 'assets',
     icon: <Package size={20} />, color: 'rgba(217,119,6,.1)', border: 'rgba(217,119,6,.2)',
     title: 'Asset Lifecycle AI',
     desc: 'Tracks depreciation, predicts replacement timelines, and optimizes capex budgets across all property assets.',
@@ -46,22 +54,28 @@ const AI_MODULES = [
       { label: 'Optimal maintenance score', value: '94%', color: '#10B981' },
     ],
     action: 'View Asset Intelligence',
+    actionHref: '/dashboard/ai/assets',
   },
   {
+    id: 'maintenance',
     icon: <Wrench size={20} />, color: 'rgba(54,104,75,.1)', border: 'rgba(54,104,75,.2)',
     title: 'Predictive Maintenance AI',
     desc: 'IoT sensor data + repair history power failure-prediction models for HVAC, lifts, and electrical systems.',
     alerts: [{ label: '⚠️ HVAC Block B — 12 days', sub: 'Compressor efficiency drop 23%', color: '#9E3C3C' }, { label: '⚡ Elevator Tower A — 28 days', sub: 'Motor vibration above baseline', color: '#D6A345' }],
     action: 'Auto-Schedule Maintenance',
+    actionHref: '/dashboard/ai/maintenance',
   },
   {
+    id: 'contracts',
     icon: <FileText size={20} />, color: 'rgba(207,161,90,.1)', border: 'rgba(207,161,90,.2)',
     title: 'Contract Intelligence Engine',
     desc: 'NLP reads and extracts key clauses, flags anomalies, and summarises lease and vendor contracts.',
     tags: ['✅ Rent Escalation: 8% p.a.', '⚠️ Force majeure missing', '📌 Break clause: Year 2'],
     action: 'Analyse New Contract',
+    actionHref: '/dashboard/ai/contracts',
   },
   {
+    id: 'compliance',
     icon: <Receipt size={20} />, color: 'rgba(32,58,43,.1)', border: 'rgba(32,58,43,.25)',
     title: 'Auto-GST & Compliance AI',
     desc: 'Automates GST filing, TDS calculations, property tax reminders, and RERA compliance tracking for all properties.',
@@ -72,31 +86,39 @@ const AI_MODULES = [
       { label: 'Property Tax FY26', status: '✅ Paid', date: 'Apr 15' },
     ],
     action: 'View Compliance Dashboard',
+    actionHref: '/dashboard/ai/compliance',
   },
   {
+    id: 'valuation',
     icon: <Home size={20} />, color: 'rgba(207,161,90,.1)', border: 'rgba(207,161,90,.2)',
     title: 'AI Property Valuation',
     desc: 'Real-time valuations using comparable sales, location intelligence, rental yield, and macro indicators.',
     valuations: [{ name: 'Supratik Exotica', val: '₹142Cr', chg: '↑ 12%' }, { name: 'Supratik Elegance', val: '₹98Cr', chg: '↑ 8%' }, { name: 'Supratik Lifestyle', val: '₹45Cr', chg: '↑ 4%' }],
     action: 'Full Valuation Report',
+    actionHref: '/dashboard/ai/valuation',
   },
   {
+    id: 'sentiment',
     icon: <Activity size={20} />, color: 'rgba(32,58,43,.1)', border: 'rgba(32,58,43,.2)',
     title: 'Tenant Sentiment AI',
     desc: 'Analyses service requests, response times, and communication tone to score tenant satisfaction in real-time.',
     score: 87,
     action: 'Full Sentiment Report',
+    actionHref: '/dashboard/ai/sentiment',
   },
   {
+    id: 'energy',
     icon: <Lightbulb size={20} />, color: 'rgba(54,104,75,.1)', border: 'rgba(54,104,75,.2)',
     title: 'Energy Optimization AI',
     desc: 'Monitors IoT energy sensors to auto-schedule HVAC and lighting for optimal efficiency and carbon reduction.',
     savings: [{ label: '💡 Lighting auto-dim', saved: '₹18K/month' }, { label: '❄️ HVAC scheduling', saved: '15% reduction' }, { label: '☀️ Solar ROI', saved: '3.2 yr payback' }],
     action: 'View Energy Dashboard',
+    actionHref: '/dashboard/ai/energy',
   },
 ];
 
 export default function AIPage() {
+  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([
     { role: 'assistant', content: "Hello! I'm PropelAI. Ask me anything about your property portfolio — revenue, occupancy, tenants, maintenance, or financial performance. Try: *\"What is our total revenue this month?\"*" }
   ]);
@@ -108,6 +130,14 @@ export default function AIPage() {
 
   const { data: churnData } = useQuery({ queryKey: ['churn-risks'], queryFn: () => aiApi.getChurnRisks(), staleTime: 10 * 60_000 });
   const { data: forecastData } = useQuery({ queryKey: ['revenue-forecast'], queryFn: () => aiApi.getRevenueForecast(), staleTime: 10 * 60_000 });
+
+  const handleModuleAction = (mod: typeof AI_MODULES[0]) => {
+    if (mod.actionHref) {
+      router.push(mod.actionHref);
+    } else {
+      toast(`🤖 ${mod.action}…`);
+    }
+  };
 
   const sendMessage = async (text?: string) => {
     const msg = text || input.trim();
@@ -260,9 +290,9 @@ export default function AIPage() {
             )}
 
             <button
-              className="text-xs font-semibold px-3 py-1.5 rounded-lg border mt-auto transition-all hover:opacity-80"
+              className="text-xs font-semibold px-3 py-1.5 rounded-lg border mt-auto transition-all hover:opacity-80 hover:shadow-md"
               style={{ background: mod.color, borderColor: mod.border, color: 'var(--text)' }}
-              onClick={() => toast(`🤖 ${mod.action}…`)}
+              onClick={() => handleModuleAction(mod)}
             >
               {mod.action} →
             </button>

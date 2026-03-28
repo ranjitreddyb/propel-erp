@@ -366,18 +366,18 @@ h4, h5, h6 {
 
 .data-table th {
   text-align: left;
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--secondary);
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.12em;
+  color: var(--text);
+  padding: 14px 16px;
+  border-bottom: 2px solid var(--border2);
+  background: var(--surface2);
 }
 
 .data-table td {
-  padding: 16px;
+  padding: 14px 16px;
   font-size: 14px;
   border-bottom: 1px solid var(--border);
   color: var(--text2);
@@ -385,7 +385,7 @@ h4, h5, h6 {
 }
 
 .data-table tr:hover td {
-  background: rgba(0, 168, 150, 0.05);
+  background: var(--surface2);
 }
 
 .data-table tr:last-child td {

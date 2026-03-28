@@ -213,7 +213,7 @@ export default function LeasingPage() {
                 ))}
               </tbody>
             </table>
-            {!(leases?.data?.length) && <EmptyState icon="📝" title="No leases found" message="Adjust filters or create a new lease." />}
+            {!(leases?.data?.length || DEMO_LEASES.length) && <EmptyState icon="📝" title="No leases found" message="Adjust filters or create a new lease." />}
           </div>
         )}
       </Card>

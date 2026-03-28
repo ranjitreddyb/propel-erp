@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { SahayakChatbot } from './SahayakChatbot';
+import { VoiceBot } from './VoiceBot';
 
 const NAV_SECTIONS = [
   {
@@ -399,6 +400,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* ─── SAHAYAK FLOATING CHATBOT ────────────────────── */}
       <SahayakChatbot />
+      
+      {/* ─── VOICE BOT (ODIA LANGUAGE) ──────────────────── */}
+      <VoiceBot />
     </div>
   );
 }
