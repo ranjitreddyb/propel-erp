@@ -18,6 +18,7 @@ from api.routes import (
     sentiment,
     energy,
     chat,
+    rtsp_detection,
 )
 from utils.database import init_db_pool
 from utils.logger import setup_logger
@@ -62,6 +63,7 @@ app.include_router(valuation.router,       prefix="/api/v1/valuation",         t
 app.include_router(sentiment.router,       prefix="/api/v1/sentiment",         tags=["Tenant Sentiment"])
 app.include_router(energy.router,          prefix="/api/v1/energy",            tags=["Energy Optimization"])
 app.include_router(chat.router,            prefix="/api/v1/chat",              tags=["AI Assistant"])
+app.include_router(rtsp_detection.router,  prefix="/api/v1/rtsp",              tags=["RTSP Detection"])
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

@@ -171,13 +171,13 @@ export default function LeasingPage() {
                 </tr>
               </thead>
               <tbody>
-                {(leases?.data || DEMO_LEASES).map((l: Lease) => (
+                {(leases?.data && leases.data.length > 0 ? leases.data : DEMO_LEASES).map((l: Lease) => (
                   <tr key={l.id}>
                     <td className="font-medium" style={{ color: 'var(--text)' }}>{l.lease_number}</td>
                     <td>{tenantName(l)}</td>
                     <td>{l.property_name}, {l.unit_number}</td>
                     <td>{l.start_date ? format(new Date(l.start_date), 'dd MMM yyyy') : '—'}</td>
-                    <td style={{ color: l.days_to_expiry <= 30 ? 'var(--accent5)' : l.days_to_expiry <= 90 ? 'var(--accent4)' : 'inherit' }}>
+                    <td style={{ color: l.days_to_expiry <= 30 ? 'var(--danger)' : l.days_to_expiry <= 90 ? 'var(--secondary)' : 'inherit' }}>
                       {l.end_date ? format(new Date(l.end_date), 'dd MMM yyyy') : '—'}
                     </td>
                     <td className="font-semibold" style={{ color: 'var(--text)' }}>
@@ -193,7 +193,7 @@ export default function LeasingPage() {
                       <div className="flex items-center gap-1.5">
                         <button
                           className="text-xs px-2.5 py-1 rounded-lg font-semibold transition-colors"
-                          style={{ background: 'rgba(79,142,247,0.15)', color: 'var(--accent)' }}
+                          style={{ background: 'rgba(8,145,178,0.15)', color: 'var(--primary)' }}
                           onClick={() => toast(`Opening lease ${l.lease_number}…`)}
                         >
                           View
@@ -201,7 +201,7 @@ export default function LeasingPage() {
                         {(l.status === 'active' && l.days_to_expiry <= 90) || l.status === 'expired' ? (
                           <button
                             className="text-xs px-2.5 py-1 rounded-lg font-semibold transition-colors"
-                            style={{ background: 'rgba(247,184,79,0.15)', color: 'var(--accent4)' }}
+                            style={{ background: 'rgba(217,119,6,0.15)', color: 'var(--secondary)' }}
                             onClick={() => toast.success(`Renewal workflow initiated for ${l.lease_number}`)}
                           >
                             Renew
