@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { aiApi } from '@/services/api';
 import { Card, PageHeader, Button, Grid, KpiCard, Loading } from '@/components/ui';
-import { Brain, Send, Zap, TrendingUp, AlertTriangle, Wrench, FileText, Home, Activity, Lightbulb, Receipt } from 'lucide-react';
+import { Brain, Send, Zap, TrendingUp, AlertTriangle, Wrench, FileText, Home, Activity, Lightbulb, Receipt, MapPin, Package } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 type Message = { role: 'user' | 'assistant'; content: string };
@@ -19,11 +19,33 @@ const AI_MODULES = [
     action: 'View Projections',
   },
   {
+    icon: <MapPin size={20} />, color: 'rgba(8,145,178,.1)', border: 'rgba(8,145,178,.2)',
+    title: 'Rental Index AI',
+    desc: 'Aggregates rental data from nearby properties, micro-markets, and govt indices to provide real-time market benchmarking.',
+    rentalIndex: [
+      { area: 'Whitefield (Office)', rate: '₹85/sqft', trend: '↑ 12%', benchmark: 'Above Market' },
+      { area: 'Whitefield (Retail)', rate: '₹120/sqft', trend: '↑ 8%', benchmark: 'At Market' },
+      { area: 'Marathahalli (Residential)', rate: '₹42/sqft', trend: '↑ 5%', benchmark: 'Below Market' },
+    ],
+    action: 'View Full Index Report',
+  },
+  {
     icon: <AlertTriangle size={20} />, color: 'rgba(158,60,60,.1)', border: 'rgba(158,60,60,.2)',
     title: 'Tenant Churn Risk Predictor',
     desc: 'Analyses payment patterns, lease age, and communication gaps to flag attrition risk 90 days ahead.',
     risks: [{ name: 'Unit 4A — TechStar', pct: 78, level: 'HIGH' }, { name: 'Unit 7B — Gourmet Co', pct: 52, level: 'MED' }, { name: 'Unit 12C — MegaCorp', pct: 12, level: 'LOW' }],
     action: 'Generate Retention Plan',
+  },
+  {
+    icon: <Package size={20} />, color: 'rgba(217,119,6,.1)', border: 'rgba(217,119,6,.2)',
+    title: 'Asset Lifecycle AI',
+    desc: 'Tracks depreciation, predicts replacement timelines, and optimizes capex budgets across all property assets.',
+    assetInsights: [
+      { label: 'Assets needing replacement', value: '8', color: '#DC2626' },
+      { label: 'Warranty expiring (90d)', value: '12', color: '#F59E0B' },
+      { label: 'Optimal maintenance score', value: '94%', color: '#10B981' },
+    ],
+    action: 'View Asset Intelligence',
   },
   {
     icon: <Wrench size={20} />, color: 'rgba(54,104,75,.1)', border: 'rgba(54,104,75,.2)',
@@ -108,8 +130,8 @@ export default function AIPage() {
   return (
     <div className="animate-fade-in">
       <PageHeader
-        title="🧠 AI Intelligence Command Centre"
-        subtitle="7 active AI modules · Real-time predictions & automation"
+        title="AI Intelligence Command Centre"
+        subtitle="10 active AI modules · Real-time predictions & automation"
         actions={
           <Button variant="primary" onClick={() => toast.success('Running full AI analysis across all modules…')}>
             <Zap size={14} /> Run Full Analysis
@@ -206,6 +228,32 @@ export default function AIPage() {
                       <span className="font-semibold">{c.status}</span>
                       <div className="text-[10px]" style={{ color: 'var(--text3)' }}>{c.date}</div>
                     </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {(mod as any).rentalIndex && (
+              <div className="space-y-1.5">
+                {(mod as any).rentalIndex.map((r: {area: string; rate: string; trend: string; benchmark: string}) => (
+                  <div key={r.area} className="flex justify-between items-center text-xs px-2.5 py-2 rounded-lg" style={{ background: 'var(--surface2)' }}>
+                    <div>
+                      <span className="font-medium" style={{ color: 'var(--text)' }}>{r.area}</span>
+                      <div className="text-[10px]" style={{ color: 'var(--text3)' }}>{r.benchmark}</div>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-bold" style={{ color: 'var(--primary)' }}>{r.rate}</span>
+                      <div className="text-[10px] font-semibold" style={{ color: r.trend.includes('↑') ? '#10B981' : '#EF4444' }}>{r.trend}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {(mod as any).assetInsights && (
+              <div className="space-y-1.5">
+                {(mod as any).assetInsights.map((a: {label: string; value: string; color: string}) => (
+                  <div key={a.label} className="flex justify-between items-center text-xs px-2.5 py-2 rounded-lg" style={{ background: 'var(--surface2)' }}>
+                    <span style={{ color: 'var(--text2)' }}>{a.label}</span>
+                    <span className="font-bold text-sm" style={{ color: a.color }}>{a.value}</span>
                   </div>
                 ))}
               </div>
